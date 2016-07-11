@@ -1,0 +1,2536 @@
+%\iffalse
+% csvtools.dtx generated using makedtx version 0.91b (c) Nicola Talbot
+% Command line args:
+%   -src "csvtools\.sty\Z=>csvtools.sty"
+%   -src "csvpie\.sty\Z=>csvpie.sty"
+%   -src "csvsort\.sty\Z=>csvsort.sty"
+%   -doc "manual.tex"
+%   -author "Nicola Talbot"
+%   -dir "source"
+%   csvtools
+% Created on 2007/7/3 10:24
+%\fi
+%\iffalse
+%<*package>
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%</package>
+%\fi
+% \iffalse
+% Doc-Source file to use with LaTeX2e
+% Copyright (C) 2007 Nicola Talbot, all rights reserved.
+% \fi
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[colorlinks,
+            bookmarks,
+            hyperindex=false,
+            pdfauthor={Nicola Talbot},
+            pdftitle={csvtools: A LaTeX2e Package Providing Access to Data Saved in a CSV File},
+            pdfkeywords={LaTeX,package,csv}]{hyperref}
+\usepackage{csvpie}
+\usepackage{colortbl}
+
+
+\renewcommand{\usage}[1]{\hyperpage{#1}}
+\renewcommand{\main}[1]{\hyperpage{#1}}
+\newcommand{\see}[2]{\emph{see} #1}
+\makeatletter
+\def\index@prologue{\section*{Index}}
+\makeatother
+\RecordChanges
+\PageIndex
+\CheckSum{1878}
+\OnlyDescription
+\newcommand{\stynamefmt}[1]{\textsf{#1}}
+\newcommand{\envname}[1]{\textsf{#1}}
+
+
+\newcommand{\cmdname}[1]{\texttt{\symbol{92}#1}}
+
+\iffalse
+ Doc-Source file to use with LaTeX2e
+ Copyright (C) 2003 Nicola Talbot, all rights reserved.
+\fi
+
+
+ \newcounter{example}
+ \newenvironment{example}[2]{\refstepcounter{example}\label{#2}%
+\subsection*{Example \theexample\ (#1)}%
+\addcontentsline{loe}{section}{\protect\numberline{\theexample}#1}}{\par\centerline{\rule{2in}{1pt}}\par}
+
+\begin{document}
+\DocInput{csvtools.dtx}
+\end{document}
+%</driver>
+%\fi
+% \DeleteShortVerb{\|}
+% \MakeShortVerb{"}
+% \title{csvtools v1.24 : A \LaTeXe\ Package Providing Access to Data Saved in a CSV File}
+% \author{Nicola Talbot}
+% \date{3rd July 2007}
+% \maketitle
+% \tableofcontents
+%
+%\section*{List of Examples}
+%
+%\makeatletter\@starttoc{loe}\makeatother
+%
+% \section{Introduction}
+% The \stynamefmt{csvtools} package allows you to repeatedly perform
+% a set of \LaTeX\ commands on data in each row
+% of a comma separated variable (CSV) file.
+% This can be used for mail merging, generating
+% tables etc.
+%
+%\changes{1.2}{2006 Sept 1}{separator can now be changed}%
+%As from version 1.2, you can specify a different separator. 
+%To change the separator, use the command:\\[10pt]
+%\DescribeMacro{\setcsvseparator}\cmdname{setcsvseparator}\{\meta{separator}\}\\[10pt]
+%For example, if your data is separated by colons instead of
+%commas, do:
+%\begin{verbatim}
+%\setcsvseparator{:}
+%\end{verbatim}
+%\changes{1.2}{2006 Sept 1}{entries can be delimited with double quotes}%
+%If your separator occurs within an entry, the entry must be
+%enclosed in double quotes, for example:
+%\begin{verbatim}
+%Name,Address,Telephone
+%A.N. Other,"1 The Street,The Town",0123456789
+%\end{verbatim}
+%Be careful of \TeX\ special characters occuring within a CSV
+%file, for example:
+%\begin{verbatim}
+%Name,Address,Telephone
+%Jack \& Jill,"2 The Street,The Town",0123456789
+%\end{verbatim}
+%
+% \section{Mail Merging and Similar Applications}
+%
+%\DescribeMacro{\applyCSVfile}\noindent
+% \cmdname{applyCSVfile}[\meta{n}]\{\meta{filename}\}\{\meta{text}\}\\
+% \cmdname{applyCSVfile*}[\meta{n}]\{\meta{filename}\}\{\meta{text}\}\\[10pt]
+% Letters can be generated using data given in 
+% each line from \meta{filename}.
+% If the CSV file contains a header row, the
+% unstarred version of \cmdname{applyCSVfile} should
+% be used, otherwise the starred version \cmdname{applyCSVfile*}
+% should be used.  The optional argument \meta{n}
+% specifies on which line the actual data (not header line)
+% starts.  The unstarred version defaults to line 2 
+% (the header row is always assumed to be on line 1)
+% and the starred version defaults to 1.
+%
+% With the unstarred version, the entries in the header row
+% are used to generate commands of the form 
+% \DescribeMacro{\insert...}\cmdname{insert}\meta{identifier}\footnote{See Note~\ref{itm:insert} in Section~\ref{sec:drawbacks}}
+% to access corresponding elements
+% in the row currently being processed.  For example,
+% suppose the first line of the CSV file looks like:
+%\begin{verbatim}
+%Name,Address,Time,Date
+%\end{verbatim}
+% then the commands \cmdname{insertName}, \cmdname{insertAddress},
+% \cmdname{insertTime} and \cmdname{insertDate} are
+% created, allowing you to use the entries in the first,
+% second, third and fourth columns of the current row.
+% If the header text contains non-alphabetical characters,
+% e.g.\ \texttt{Full Name}, then you will need to use 
+% \DescribeMacro{\insertbyname}\cmdname{insertbyname}\texttt{\{}\meta{text}\texttt{\}},
+% e.g.\ \verb'\insertbyname{Full Name}'.
+%
+%Alternatively, you can use the 
+%\DescribeMacro{\field}\cmdname{field}\{\meta{col}\} command, where 
+%\meta{col} is the column number of the entry, so \verb"\field{1}"
+%indicates the first entry in the current row and \verb"\field{2}"
+%indicates the second entry in the current row.
+%
+% \begin{example}{Mail Merging}{ex:mail}
+% Suppose there is a file called \texttt{details.csv} that has the 
+% following contents:
+%\begin{verbatim}
+%Name,Address,Time,Date
+%Miss A. Person,1 The Road\\The Town\\AB1 2XY,15.00,4th May 2004
+%Mr A. N. Other,2 The Road\\The Town\\AB1 2XY,15.30,11th May 2004
+%\end{verbatim}
+%then the following code can be used to generate a letter for each 
+%person in the CSV file\footnote{Remeber to use a letter type of
+%class file}:
+%\begin{verbatim}
+%\applyCSVfile{details.csv}{%
+%\begin{letter}{\insertName\\\insertAddress}
+%\opening{Dear \insertName}
+%
+%You are invited to an interview at \insertTime\ on the \insertDate.
+%
+%\closing{Yours Sincerely}
+%\end{letter}}
+%\end{verbatim}
+% Note that you could also use \verb'\insertbyname{Name}' etc instead
+% of \cmdname{insertName} etc.  Also note that you need to specify the
+% file extension when specifying the filename.
+%\end{example}
+%
+% \begin{example}{Multiple Figures}{ex:ps}
+% Suppose \texttt{sample3.csv} looks like:
+%\begin{verbatim}
+%File,Caption
+%circle.ps,A Circle
+%rectangle.ps,A Rectangle
+%triangle.ps,A Triangle
+%\end{verbatim}
+% Assuming that the files \texttt{circle.ps}, \texttt{rectangle.ps}
+% and \texttt{triangle.ps} exist, then the following code will
+% generate a figure for each graphics file\footnote{The 
+% \stynamefmt{graphics} or \stynamefmt{graphicx} package will be 
+%needed.}:
+%\begin{verbatim}
+%\applyCSVfile{sample3.csv}{
+%\begin{figure}
+%\centerline{\includegraphics{\insertFile}}
+%\caption{\insertCaption}
+%\end{figure}}
+%\end{verbatim}
+% Note that in this example, you can't use \verb'\insertbyname{File}'.
+% (See Note~\ref{itm:psbyname} in Section~\ref{sec:drawbacks}.)
+%\end{example}
+%
+% \begin{example}{Mail Merging using \cmdname{field}}{ex:field}
+% Suppose there is a file called \texttt{details.csv} that has the 
+% following contents:
+%\begin{verbatim}
+%Miss A. Person,1 The Road\\The Town\\AB1 2XY,15.00,4th May 2004
+%Mr A. N. Other,2 The Road\\The Town\\AB1 2XY,15.30,11th May 2004
+%\end{verbatim}
+%In this case the data has no header file, so the starred version
+%of \cmdname{applyCSVfile} must be used. Since there is no header
+%file, you must use \cmdname{field} to access the entries:
+%\begin{verbatim}
+%\applyCSVfile*{details.csv}{%
+%\begin{letter}{\field{1}\\\field{2}}
+%\opening{Dear \field{1}}
+%
+%You are invited to an interview at \field{3}\ on the \field{4}.
+%
+%\closing{Yours Sincerely}
+%\end{letter}}
+%\end{verbatim}
+%\end{example}
+%
+% \section{Converting data in a CSV file into a tabular environment}
+% \DescribeMacro{\CSVtotabular}
+% \cmdname{CSVtotabular}\{\meta{filename}\}\{\meta{col-align}\}\{\meta{first}\}\{\meta{middle}\}\{\meta{last}\}\\[10pt]
+% \meta{filename} is the name of the CSV file which must have a header row on line~1, 
+% \meta{col-align} is the column alignment argument that gets passed
+% to the \envname{tabular} environment, \meta{first}
+% is the code for the first line, \meta{middle} is the code
+% for the middle lines and \meta{last} is the code for the last line.
+% This is best demonstrated with an example.
+%
+% \begin{example}{Aligning Data from a CSV file}{ex:tab1}
+% Suppose the file \texttt{sample.csv} looks like:
+%\begin{verbatim}
+%Name,Assignment 1,Assignment 2,Total
+%A. Smith,80,70,150
+%B. Jones,60,80,140
+%J. Doe,85,75,160
+%,75,75,150
+%\end{verbatim}
+% then the following code can be used to align the data:
+%\begin{verbatim}
+%\CSVtotabular{sample.csv}{lccc}{%
+%\bfseries Name &
+%\bfseries Assignment 1&
+%\bfseries Assignment 2&
+%\bfseries Total\\}{%
+%\insertName &
+%\insertbyname{Assignment 1} &
+%\insertbyname{Assignment 2} &
+%\insertTotal\\}{%
+% &
+%\insertbyname{Assignment 1} &
+%\insertbyname{Assignment 2} &
+%\insertTotal}
+%\end{verbatim}
+% The result of this code is shown in 
+% Table~\ref{tab:ex1}\footnote{Note that \cmdname{CSVtotabular} only 
+% puts the data in a \envname{tabular} environment not in a table}.
+%\begin{table}
+%\caption{Example~\ref{ex:tab1}}
+%\label{tab:ex1}
+%\vspace{10pt}
+%\centerline{%
+%\begin{tabular}{lccc}
+%\bfseries Name &
+%\bfseries Assignment 1 &
+%\bfseries Assignment 2 &
+%\bfseries Total\\
+%A. Smith&80&70&150\\
+%B. Jones&60&80&140\\
+%J. Doe&85&75&160\\
+% &75&75&150
+%\end{tabular}}
+%\end{table}
+%\end{example}
+%
+% \vspace{10pt}
+% \DescribeMacro{\ifnextrowlast}
+% \cmdname{ifnextrowlast}\{\meta{last-code}\}\{\meta{not-last-code}\}\\[10pt]
+% The command \cmdname{ifnextrowlast} can be used to vary what happens
+% on the last but one row.  The following example illustrates
+% this by placing \cmdname{hline}\cmdname{hline} after the penultimate row.
+%
+% \begin{example}{Adding Lines}{ex:tab2}
+%\begin{verbatim}
+%\CSVtotabular{sample.csv}{|l|ccc|}{%
+%\hline\bfseries Name &
+%\bfseries Assignment 1&
+%\bfseries Assignment 2&
+%\bfseries Total\\\hline\hline}{%
+%\insertName &
+%\insertbyname{Assignment 1} &
+%\insertbyname{Assignment 2} &
+%\insertTotal
+%\ifnextrowlast{\\\hline\hline}{\\}}{%
+% &
+%\insertbyname{Assignment 1} &
+%\insertbyname{Assignment 2} &
+%\insertTotal\\\hline}
+%\end{verbatim}
+%This result of this code is shown in Table~\ref{tab:ex2}.\begin{table}
+%\caption{Example~\ref{ex:tab2}}
+%\label{tab:ex2}
+%\vspace{10pt}
+%\begin{center}
+%\begin{tabular}{|l|ccc|}
+%\hline\bfseries Name &
+%\bfseries Assignment 1 &
+%\bfseries Assignment 2 &
+%\bfseries Total\\\hline\hline
+%A. Smith&80&70&150\\
+%B. Jones&60&80&140\\
+%J. Doe&85&75&160\\\hline\hline
+% &75&75&150\\\hline
+%\end{tabular}
+%\end{center}
+%\end{table}
+%\end{example}
+%
+% \begin{example}{Added Complexity}{ex:tab3}
+% In this example, \cmdname{multicolumn} is used to override
+% the column specifier for the first column in the 
+% last row.
+%\begin{verbatim}
+%\CSVtotabular{sample2.csv}{|l|ccc|}{%
+%\hline\bfseries Name & 
+%\bfseries Assignment 1 & 
+%\bfseries Assignment 2 & 
+%\bfseries Total\\\hline\hline
+%}{%
+%\insertName & 
+%\insertbyname{Assignment 1} & 
+%\insertbyname{Assignment 2} & 
+%\insertTotal
+%\ifnextrowlast{\\\hline\multicolumn{1}{l|}{}}{\\}
+%}{%
+% & 
+%\insertbyname{Assignment 1} & 
+%\insertbyname{Assignment 2} & 
+%\insertTotal\\\cline{2-4}
+%}
+%\end{verbatim}
+% Notice that instead of placing \verb'\multicolumn{1}{l|}{}'
+% at the start of the final argument, it is instead
+% placed in the first argument to \cmdname{ifnextrowlast}\footnote{See 
+% Note~\ref{itm:noalign} in Section~\ref{sec:drawbacks}}.
+%The result of this code is shown in Table~\ref{tab:ex3}.\begin{table}
+%\caption{Example~\ref{ex:tab3}}
+%\label{tab:ex3}
+%\vspace{10pt}
+%\begin{center}
+%\begin{tabular}{|l|ccc|}
+%\hline\bfseries Name &
+%\bfseries Assignment 1 &
+%\bfseries Assignment 2 &
+%\bfseries Total\\\hline\hline
+%A. Smith&80&70&150\\
+%B. Jones&60&80&140\\
+%J. Doe&85&75&160\\\hline
+% \multicolumn{1}{l|}{}&75&75&150\\\cline{2-4}
+%\end{tabular}
+%\end{center}
+%\end{table}
+%\end{example}
+%
+% \section{Converting CSV file into longtable environment}
+%\DescribeMacro{\CSVtolongtable}
+%The command \cmdname{CSVtolongtable} works in the same way as \cmdname{CSVtotabular} but
+% creates a \envname{longtable} environment instead of a \envname{tabular} environment.
+%
+%\begin{example}{Using a longtable environment}{ex:long}
+%Suppose the CSV file in the previous example, contains, say, 100 entries.
+%This will no longer fit onto one page, so it would be better to use
+%\envname{CSVtolongtable} instead. For example:
+%\begin{verbatim}
+%\CSVtolongtable{sample.csv}{|l|ccc|}{%
+%\caption{Student Marks}\label{tab:students}\\
+%\hline
+%\bfseries Name &
+%\bfseries Assignment 1 &
+%\bfseries Assignment 2 &
+%\bfseries Total\\\hline
+%\endfirsthead
+%\caption[]{Student Marks}\\
+%\hline
+%\bfseries Name &
+%\bfseries Assignment 1 &
+%\bfseries Assignment 2 &
+%\bfseries Total\\\hline
+%\endhead
+%\hline
+%\multicolumn{3}{r}{\em Continued on next page}
+%\endfoot
+%\hline
+%\endlastfoot}{%
+%\insertName &
+%\insertbyname{Assignment 1} &
+%\insertbyname{Assignment 2} &
+%\insertTotal
+%\ifnextrowlast{\\\hline\hline}{\\}}{%
+% & \insertbyname{Assignment 1} &
+% \insertbyname{Assignment 2} &
+%\insertTotal\\}
+%\end{verbatim}
+%\end{example}
+%
+% \section{Associated Counters}
+%
+% Within the \cmdname{CSVtotabular}, \cmdname{CSVtolongtable} and 
+%\cmdname{applyCSVfile} commands, there are two
+% counters, \DescribeMacro{csvlinenum}\DescribeMacro{csvrownumber}%
+% \texttt{csvlinenum} and \texttt{csvrownumber}.
+% The former, \texttt{csvlinenum}, is the current line number in the CSV
+% file, whereas the latter, \texttt{csvrownumber}, is the current
+% data row. Of the two counters, \texttt{csvrownumber} is likely to be
+% the most useful.
+%
+% \begin{example}{Stripy Table}{ex:stripy}
+%David~Carlisle's \stynamefmt{colortbl} package defines the command 
+%\cmdname{rowcolor} which enables you to specify the row colour. 
+%Suppose you want a stripy table\footnote{This is designed as an 
+%example of how to use the package, not incouragement to produce 
+%garish tables!}, 
+% this can be achieved as follows:
+%\begin{verbatim}
+%\CSVtotabular{sample2.csv}{lccc}{%
+%\rowcolor{green}\bfseries Name & 
+%\bfseries Assignment 1 & 
+%\bfseries Assignment 2 & 
+%\bfseries Total\\\rowcolor{blue}
+%}{%
+%\insertName & 
+%\insertbyname{Assignment 1} & 
+%\insertbyname{Assignment 2} & 
+%\insertTotal
+%\ifthenelse{\isodd{\value{csvrownumber}}}{%
+%\\\rowcolor{green}}{\\\rowcolor{blue}}
+%}{%
+% & 
+%\insertbyname{Assignment 1} & 
+%\insertbyname{Assignment 2} & 
+%\insertTotal
+%}
+%\end{verbatim} 
+%The resulting table is illustrated in Table~\ref{tab:stripy}.
+%\begin{table}[htb]
+%\caption{Stripy Table Example}
+%\label{tab:stripy}
+%\vspace{10pt}
+%\setcounter{csvrownumber}{0}
+%\begin{tabular}{lccc}
+%\rowcolor{green}\bfseries Name & 
+%\bfseries Assignment 1 & 
+%\bfseries Assignment 2 & 
+%\bfseries Total\\\rowcolor{blue}
+%\refstepcounter{csvrownumber}A. Smith & 
+%80 & 
+%70 & 
+%150
+%\ifthenelse{\isodd{\value{csvrownumber}}}{\\\rowcolor{green}}{\\\rowcolor{blue}}
+%\refstepcounter{csvrownumber}B. Jones & 
+%60 & 
+%80 & 
+%140
+%\ifthenelse{\isodd{\value{csvrownumber}}}{\\\rowcolor{green}}{\\\rowcolor{blue}}
+%\refstepcounter{csvrownumber}J. Doe & 
+%85 & 
+%75 & 
+%160
+%\ifthenelse{\isodd{\value{csvrownumber}}}{\\\rowcolor{green}}{\\\rowcolor{blue}}
+%\refstepcounter{csvrownumber} & 
+%75 & 
+%75 & 
+%150
+%\end{tabular}
+%\end{table}
+%\end{example}
+%
+%\begin{example}{More Mail Merging}{ex:mailref}
+%This is an example of mail merging where the letter reference
+%is generated from the value of \texttt{csvrownumber}.  The CSV file 
+%is as used in Example~\ref{ex:mail} on page~\pageref{ex:mail}.\begin{verbatim}
+%\applyCSVfile{details.csv}{%
+%\begin{letter}{\insertName\\\insertAddress}
+%\opening{Dear \insertName}
+%
+%\textbf{Ref : } interview.\thecsvrownumber
+%
+%You are invited to an interview at \insertTime\ on the \insertDate.
+%
+%\closing{Yours Sincerely}
+%\end{letter}}
+%\end{verbatim}
+%\end{example}
+%
+% \section{Cross-Referencing}
+%
+% Labels can be generated using the standard
+% \cmdname{label} command, but you will need some way
+% to make each label unique.  Example~\ref{ex:ref1}
+% does this by using \cmdname{thecsvrownumber},
+% whereas Example~\ref{ex:ref2} uses \cmdname{insert}\meta{identifier}.
+%
+% \begin{example}{Labelling within \cmdname{applyCSVfile}}{ex:ref1}
+% Example~\ref{ex:ps} on page~\pageref{ex:ps} can be modified to  label each figure:
+%\begin{verbatim}
+%\applyCSVfile{sample3.csv}{
+%\begin{figure}
+%\centerline{\includegraphics{\insertFile}}
+%\caption{\insertCaption}
+%\label{fig:pic\thecsvrownumber}
+%\end{figure}}
+%\end{verbatim}
+% This example uses
+% \verb'\label{fig:pic\thecsvrownumber}', so the first figure 
+%generated by this \cmdname{applyCSVfile} command will have the 
+%label \texttt{fig:pic1}, the second \texttt{fig:pic2} etc.
+%\end{example}
+%
+% \begin{example}{Labelling within \cmdname{applyCSVfile}}{ex:ref2}
+% Modifying the previous example, we now have:
+%\begin{verbatim}
+%\applyCSVfile{sample3.csv}{
+%\begin{figure}
+%\centerline{\includegraphics{\insertFile}}
+%\caption{\insertCaption}
+%\label{fig:\insertFile}
+%\end{figure}}
+%\end{verbatim}
+% The labels for each figure are now:
+% \texttt{fig:circle.ps}, \texttt{fig:rectangle.ps}
+% and \texttt{fig:triangle.ps}, respectively.
+%\end{example}
+%
+%\begin{example}{Labelling within \cmdname{CSVtotabular}}{ex:timetogrowth}
+% This example is slightly more complicated.  
+% The CSV file, \texttt{data.csv} looks like:
+%\begin{verbatim}
+%Incubation Temperature,Incubation Time,Time to Growth
+%40,120,40
+%40,90,60
+%35,180,20
+%\end{verbatim}
+%The following code generates a table using the data
+% with an additional column that generates the experiment
+% number. (See note~\ref{itm:csvrownumber}.)
+%\begin{verbatim}
+%\begin{table}
+%\caption{Time to Growth Experiments}
+%\label{tab:exp}
+%\vspace{10pt}
+%\centering
+%\CSVtotabular{data.csv}{cccc}{%
+% % Header Row
+%\bfseries Experiment &
+%\bfseries \begin{tabular}{c}Incubation\\Temperature\end{tabular} &
+%\bfseries \begin{tabular}{c}Incubation\\Time\end{tabular} &
+%\bfseries \begin{tabular}{c}Time\\to\\Growth\end{tabular}\\}{%
+% % Middle Rows
+%\label{exp:\insertbyname{Incubation Temperature}:\insertbyname{Incubation Time}}
+%\thecsvrownumber &
+%\insertbyname{Incubation Temperature} &
+%\insertbyname{Incubation Time} &
+%\insertbyname{Time to Growth} \\}{%
+% % Final Row
+%\label{exp:\insertbyname{Incubation Temperature}:\insertbyname{Incubation Time}}
+%\thecsvrownumber &
+%\insertbyname{Incubation Temperature} &
+%\insertbyname{Incubation Time} &
+%\insertbyname{Time to Growth}}
+%\par
+%\end{table}
+%
+%It can be seen from Table~\ref{tab:exp}, that 
+%Experiment~\ref{exp:35:180} had the shortest time to growth.
+%\end{verbatim}
+% In this example, each experiment has the corresponding label
+% \texttt{exp:}\meta{Incubation Temperature}\texttt{:}\meta{Incubation Time}
+% so the first experiment has label \texttt{exp:40:120}, the
+% second experiment has the label \texttt{exp:40:90} and the
+% third experiment has the label \texttt{exp:35:180}.
+%
+% Table~\ref{tab:timetogrowth} shows the resulting table for
+% this example.
+% \begin{table}
+%\caption{Time to Growth Experiments}
+%\label{tab:timetogrowth}
+%\vspace{10pt}
+%\centering
+%\begin{tabular}{cccc}
+%\bfseries Experiment &
+%\bfseries \begin{tabular}{c}Incubation\\Temperature\end{tabular} &
+%\bfseries \begin{tabular}{c}Incubation\\Time\end{tabular} &
+%\bfseries \begin{tabular}{c}Time\\to\\Growth\end{tabular}\\
+% 1 & 40 & 120 & 40\\
+% 2 & 40 & 90 & 60\\
+% 3 & 35 & 180 & 20
+%\end{tabular}
+%\par
+% \end{table}
+%\end{example}
+%
+% The following example is more refined in that it 
+% takes advantage of the fact that the time to growth data consists
+% of integers only, so the experiment with the maximum growth can be 
+% determined by \LaTeX.
+%
+% \begin{example}{Labelling within \cmdname{CSVtotabular}}{ex:tablabel}
+%\begin{verbatim}
+%\newcounter{maxgrowth}
+%\newcounter{incT} % incubation temperature
+%\newcounter{inct} % incubation time
+%
+%\begin{table}
+%\caption{Time to Growth Experiments}
+%\label{tab:exp}
+%\vspace{10pt}
+%\centering
+%\CSVtotabular{data.csv}{cccc}{%
+% % Header row
+%\bfseries Experiment &
+%\bfseries \begin{tabular}{c}Incubation\\Temperature\end{tabular} &
+%\bfseries \begin{tabular}{c}Incubation\\Time\end{tabular} &
+%\bfseries \begin{tabular}{c}Time\\to\\Growth\end{tabular}\\}{%
+% % Middle rows
+%\label{exp:\insertbyname{Incubation Temperature}:\insertbyname{Incubation Time}}
+%\thecsvrownumber &
+%\insertbyname{Incubation Temperature} &
+%\insertbyname{Incubation Time} &
+%\insertbyname{Time to Growth}%
+%\ifthenelse{\value{maxgrowth}<\insertbyname{Time to Growth}}{%
+%\setcounter{maxgrowth}{\insertbyname{Time to Growth}}%
+%\setcounter{incT}{\insertbyname{Incubation Temperature}}%
+%\setcounter{inct}{\insertbyname{Incubation Time}}}{}%
+%\\}{%
+% % Last row
+%\label{exp:\insertbyname{Incubation Temperature}:\insertbyname{Incubation Time}}
+%\thecsvrownumber &
+%\insertbyname{Incubation Temperature} &
+%\insertbyname{Incubation Time} &
+%\insertbyname{Time to Growth}%
+%\ifthenelse{\value{maxgrowth}<\insertbyname{Time to Growth}}{%
+%\setcounter{maxgrowth}{\insertbyname{Time to Growth}}%
+%\setcounter{incT}{\insertbyname{Incubation Temperature}}%
+%\setcounter{inct}{\insertbyname{Incubation Time}}}{}%
+%}
+%\par
+%\end{table}
+%
+%As can be seen from Table~\ref{tab:exp}, 
+%Experiment~\ref{exp:\theincT:\theinct}
+%had the maximum time to growth, with
+%incubation time \theinct,
+%incubation temperature \theincT\ and
+%time to growth, \themaxgrowth.
+%\end{verbatim}
+% \end{example}
+%
+% \section{Saving Entries}
+% Entries can be saved using the command:\\[10pt]
+% \DescribeMacro{\csvSaveEntry}
+%\changes{1.22}{2007 January 3}{added final optional argument to 'csvSaveEntry}
+% \cmdname{csvSaveEntry}[\meta{counter}]\{\meta{identifier}\}[\meta{empty text}]\\[10pt]
+% where \meta{counter} is a \LaTeX\ counter, by default 
+%\texttt{csvrownumber},
+% and \meta{identifier} is the header entry.  The entry
+% can then be used with the command:\\[10pt]
+% \DescribeMacro{\csvGetEntry}
+% \cmdname{csvGetEntry}\{\meta{counter}\}\{\meta{identifier}\}\\[10pt]
+%The final optional argument \meta{empty text} to 
+%\cmdname{csvSaveEntry} is the text to use if the entry is blank.
+%For example, \verb|\csvSaveEntry{Time}[MISSING DATA]| will 
+%print MISSING DATA if the Time field is blank.
+%
+%The following example illustrates the use of these commands.
+%
+% \begin{example}{Saving Entries}{ex:index}
+% This example illustrates how you can use one CSV
+% file to access data in other CSV files.
+% This example has several CSV files:
+%\\[10pt]
+% File \texttt{index.csv}:
+%\begin{verbatim}
+%File,Temperature,NaCl,pH
+%exp25a.csv,25,4.7,0.5
+%exp25b.csv,25,4.8,1.5
+%exp30a.csv,30,5.12,4.5
+%\end{verbatim}
+% File \texttt{exp25a.csv}:
+%\begin{verbatim}
+%Time,Logcount
+%0,3.75
+%23,3.9
+%45,4.0
+%\end{verbatim}
+% File \texttt{exp25b.csv}:
+%\begin{verbatim}
+%Time,Logcount
+%0,3.6
+%60,3.8
+%120,4.0
+%\end{verbatim}
+% File \texttt{exp30a.csv}:
+%\begin{verbatim}
+%Time,Logcount
+%0,3.73
+%23,3.67
+%60,4.9
+%\end{verbatim}
+%
+% It is not possible to nest \cmdname{CSVtotabular}, 
+%\cmdname{CSVtolongtable} and \cmdname{applyCSVfile},
+% so if you need to go through \texttt{index.csv} and use each file
+% named in there, you can first go through \texttt{index.csv} 
+%storing the information using \cmdname{csvSaveEntry} as follows:
+%\begin{verbatim}
+%\newcounter{maxexperiments}
+%\applyCSVfile{sample5.csv}{%
+%\stepcounter{maxexperiments}
+%\csvSaveEntry{File}
+%\csvSaveEntry{Temperature}
+%\csvSaveEntry{NaCl}
+%\csvSaveEntry{pH}
+%}
+%\end{verbatim}
+% The counter \texttt{maxexperiments} simply counts the number of 
+% entries in \texttt{index.csv}.
+% The entries can now be used to generate a table for each
+% file listed in \texttt{index.csv} (the \cmdname{whiledo} command 
+%is defined in the \stynamefmt{ifthen} package):
+%\begin{verbatim}
+%\newcounter{experiment}
+%\whiledo{\value{experiment}<\value{maxexperiments}}{%
+%\stepcounter{experiment}
+%\begin{table}
+%\caption{Temperature = \protect\csvGetEntry{experiment}{Temperature},
+%NaCl = \protect\csvGetEntry{experiment}{NaCl},
+%pH = \protect\csvGetEntry{experiment}{pH}}
+%\vspace{10pt}
+%\centering
+%\CSVtotabular{\csvGetEntry{experiment}{File}}{ll}{%
+%Time & Log Count\\}{%
+%\insertTime & \insertLogcount\\}{%
+%\insertTime & \insertLogcount}
+%
+%\end{table}
+%}
+%\end{verbatim}
+% Note that \cmdname{csvGetEntry} needs to be \cmdname{protect}ed 
+%within the \cmdname{caption} command.
+%
+% This example can be modified if, say, you only want the
+% tables where the temperature is 25:
+%\begin{verbatim}
+%\setcounter{experiment}{0}
+%\whiledo{\value{experiment}<\value{maxexperiments}}{%
+%\stepcounter{experiment}
+%\ifthenelse{\equal{\csvGetEntry{experiment}{Temperature}}{25}}{%
+%\begin{table}
+%\caption{Temperature = \protect\csvGetEntry{experiment}{Temperature},
+%NaCl = \protect\csvGetEntry{experiment}{NaCl},
+%pH = \protect\csvGetEntry{experiment}{pH}}
+%\vspace{10pt}
+%\centering
+%\CSVtotabular{\csvGetEntry{experiment}{File}}{ll}{%
+%Time & Log Count\\}{%
+%\insertTime & \insertLogcount\\}{%
+%\insertTime & \insertLogcount}\par
+%\end{table}}{}
+%}
+%\end{verbatim}
+% \end{example}
+%
+%\section{Pie Charts (csvpie.sty)}
+%
+%\changes{1.2}{2006 Sept 1}{csvpie.sty added}
+%If you want to create a pie chart from data stored in a CSV file,
+%you can use the \stynamefmt{csvpie} package, distributed with the
+%\stynamefmt{csvtools} package. A basic pie chart can be created 
+%using the command:\\[10pt]
+%\DescribeMacro{\csvpiechart}\noindent
+%\cmdname{csvpiechart}[\meta{options}]\{\meta{variable}\}\{\meta{filename}\}\\[10pt]
+%where \meta{filename} is the name of the CSV file containing the 
+%data, and \meta{variable} is the command indicating the entry that 
+%contains the value for the given segment.
+%The starred version of \cmdname{csvpiechart} should be used if
+%the CSV file has no header row.
+%
+%The pie charts have ``inner'' labels on the segment, and
+%``outer'' labels outside the chart. The labels are given by the
+%commands \DescribeMacro{\csvpieinnerlabel}\cmdname{csvpieinnerlabel}
+%and \DescribeMacro{\csvpieouterlabel}\cmdname{csvpieouterlabel}.
+%The default definitions are:
+%\begin{verbatim}
+%\newcommand{\csvpieouterlabel}{\field{1}}
+%\newcommand{\csvpieinnerlabel}{\field{2}\%}
+%\end{verbatim}
+%This assumes that the second column contains the data, and the
+%first column contains a description, but can be redefined
+%as necessary.
+%
+%The pie chart display can be modified using the optional
+%argument to \cmdname{csvpiechart}.
+%This argument should be a \meta{key}=\meta{value} list.
+%The available keys are as follows:
+%\begin{description}
+%\item[start] This should be an integer specifying the starting angle
+%of the first segment. This is 0 by default.
+%
+%\item[total] This should be an integer specifying the sum of all
+%the segment values. This is 100 by default.
+%
+%\item[radius] This should be a length specifying the radius of the
+%pie chart. (Default: 2cm)
+%
+%\item[inner] This should be a fraction specifying the relative distance
+%along the radius to start the inner label. (Default: 0.25)
+%
+%\item[outer] This should be a fraction specifying the relative distance
+%along the radius to start the outer label. (Default: 1.25)
+%
+%\item[cutaway] This should be a comma-separated list of numbers 
+%corresponding to the segments that should be cut away from the
+%rest of the pie chart. Since the value may contain commas, the value
+%should always be enclosed in braces. Ranges may also be used.
+%If a range is used, all the segments in the given range are
+%kept together, so, for example, \verb"cutaway={1,2}" will separate
+%the first two segments from the pie chart, and the two segments
+%will also be separated from each other, whereas \verb"cutaway={1-2}"
+%will separate the first two segments from the pie chart, but will
+%keep the two segments together.
+%
+%\item[offset] This should be a fraction specifying the
+%relative distance along the radius to shift the cut away
+%segments. (Default: 0.1)
+%
+%\item[firstrow] This should be the number of the first row
+%containing the actual data. This is equivalent to the optional
+%argument of \cmdname{applyCSVfile} or \cmdname{applyCSVfile*}.
+%\end{description}
+%
+%Note that \TeX\ performs integer arithmetic. Although the CSV
+%file may contain decimal numbers, rounding will occur when 
+%constructing the pie charts.
+%
+%The colours for the pie chart segments can be set using the
+%command\DescribeMacro{\csvpiesegmentcol}:\\[10pt]
+%\cmdname{csvpiesegmentcol}\{\meta{n}\}\{\meta{colour}\}\\[10pt]
+%where \meta{n} is the segment number, and \meta{colour} is a 
+%defined colour name. For example, if you want the first segment
+%in the pie chart to be yellow, do:
+%\begin{verbatim}
+%\csvpiesegmentcol{1}{yellow}
+%\end{verbatim}
+%There are 8 predefined segment colours, if your pie chart has
+%more than 8 segments, you will need to specify the remainder.
+%
+%You can obtain the colour name for a given segment 
+%using\DescribeMacro{\csvpiesegcolname}:\\[10pt]
+%\cmdname{csvpiesegcolname}\{\meta{n}\}\\[10pt]
+%where \meta{n} is the segment number. The \cmdname{csvpiechart}
+%command uses \cmdname{applyCSVfile}, so the \texttt{csvrownumber}
+%counter can be used. This means that you can change the text 
+%colour of the outer label to match the segment. For example:
+%\begin{verbatim}
+%\renewcommand{\csvpieouterlabel}{%
+%\color{\csvpiesegcolname{\value{csvrownumber}}}\field{2}}
+%\end{verbatim}
+%Note that \cmdname{value} must be used since \meta{n} has to be
+%a number.
+%
+%If you want grey pie charts, either use the \texttt{monochrome}
+%package option:
+%\begin{verbatim}
+%\usepackage[monochrome]{csvpie}
+%\end{verbatim}
+%or use the command \DescribeMacro{\colorpiechartfalse}\cmdname{colorpiechartfalse} prior to using \cmdname{csvpiechart}.
+%To switch back to colour pie charts, use
+%\DescribeMacro{\colorpiecharttrue}\cmdname{colorpiecharttrue}.
+%
+%\begin{example}{A Pie Chart}{ex:piechart}
+%Given a CSV file
+%(called \texttt{fruit.csv}) containing:
+%\begin{verbatim}
+%Name,Value
+%Apples,20
+%Pears,15
+%"lemons,limes",30.5
+%Peaches,24.5
+%Cherries,10
+%\end{verbatim}
+%Then the value for each segment is given by the second column, so
+%\meta{variable} should be \verb"\field{2}" or \verb|\insertValue|.
+%The pie charts shown in Figure~\ref{fig:piechart} can be created 
+%using:
+%\begin{verbatim}
+% % Change the way the labels are displayed
+%\renewcommand{\csvpieinnerlabel}{\sffamily\insertValue\%}
+%\renewcommand{\csvpieoutlabel}{%
+%\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily\insertName}
+%
+%\begin{figure}
+%\begin{center}
+%\begin{tabular}{cc}
+%\csvpiechart[start=45,cutaway={1,2}]{\insertValue}{fruit.csv} &
+%\csvpiechart[start=45,cutaway={1-2}]{\insertValue}{fruit.csv} \\
+%(a) & (b)
+%\end{tabular}
+%\end{center}
+%\caption{Pie Chart Example (a) cutaway=\{1,2\} (b) cutaway=\{1-2\}}
+%\end{figure}
+%\end{verbatim}
+%The inner and outer labels have been 
+%redefined to use a sans-serif font, and the outer label is in
+%the same colour as its corresponding segment.
+%Both pie charts have a starting angle of $45^\circ$, and theyhave the first two segments cutaway, but in (a)
+%the first two segments are separated from each other, whereas in 
+%(b), the first two segments are joined, although separated
+%from the rest of the pie chart.
+%
+%If the CSV file has no header row, the starred version should be
+%used, e.g.:
+%\begin{verbatim}
+%\csvpiechart*[cutaway={1-2}]{\field{2}}{fruit.csv}
+%\end{verbatim}
+%
+%\begin{figure}[htbp]
+%\begin{center}
+%\begin{tabular}{cc}
+%\csvpiesetkeys{start=45,cutaway={1,2}}%
+%\edef\csvstartang{\thecsvstartangle}\relax
+%\setcounter{csvrownumber}{0}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{20}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{15}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{30.5}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{24.5}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{10}\relax
+%\setcounter{csvstartangle}{\csvstartang}\relax
+%\ifthenelse{\equal{\csvpiecutaways}{}}{}{\csvcomputeoffsets}\relax
+%\begin{tikzpicture}
+%\setcounter{csvrownumber}{0}\relax
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily20\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%Apples}
+%\csvpiesegment{20}
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily15\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%Pears}
+%\csvpiesegment{15}
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily30.5\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%lemons,limes}
+%\csvpiesegment{30.5}
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily24.5\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%Peaches}
+%\csvpiesegment{24.5}
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily10\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%Cherries}
+%\csvpiesegment{10}
+%\end{tikzpicture}
+% &
+%\csvpiesetkeys{start=45,cutaway={1-2}}%
+%\edef\csvstartang{\thecsvstartangle}\relax
+%\setcounter{csvrownumber}{0}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{20}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{15}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{30.5}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{24.5}\relax
+%\stepcounter{csvrownumber}\relax
+%\csvsetsegmentparams{\thecsvrownumber}{10}\relax
+%\setcounter{csvstartangle}{\csvstartang}\relax
+%\ifthenelse{\equal{\csvpiecutaways}{}}{}{\csvcomputeoffsets}\relax
+%\begin{tikzpicture}
+%\setcounter{csvrownumber}{0}\relax
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily20\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%Apples}
+%\csvpiesegment{20}
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily15\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%Pears}
+%\csvpiesegment{15}
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily30.5\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%lemons,limes}
+%\csvpiesegment{30.5}
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily24.5\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%Peaches}
+%\csvpiesegment{24.5}
+%\stepcounter{csvrownumber}\relax
+%\renewcommand*{\csvpieinnerlabel}{\sffamily10\%}
+%\renewcommand*{\csvpieouterlabel}{\color{\csvpiesegcolname{\value{csvrownumber}}}\sffamily
+%Cherries}
+%\csvpiesegment{10}
+%\end{tikzpicture}
+% \\
+%(a) & (b)
+%\end{tabular}
+%\end{center}
+%\caption{Pie Chart Example (a) cutaway=\{1,2\} 
+%(b) cutaway=\{1-2\}}
+%\label{fig:piechart}
+%\end{figure}
+%\end{example}
+%
+%\section{Sorting Data (csvsort.sty)}
+%
+%The \stynamefmt{csvsort} package (which forms part of the 
+%\stynamefmt{csvtools} bundle) provides analogous commands to
+%those provided by \stynamefmt{csvtools}, but the data is first
+%sorted. The \stynamefmt{csvsort} package needs to be loaded
+%separately in order to access the necessary commands. The package
+%options should be a list of key=value pairs, where the available
+%keys are:
+%\begin{description}
+%\item[verbose] Verbose mode. This is a boolean key. If set, the
+%comparisons performed by the insertion sort code are printed to
+%the screen. (Default: \texttt{verbose=true}.)
+%
+%\item[sort] This key specifies how to sort the data. It may take
+%one of the following values:
+%\begin{itemize}
+%\item \texttt{alphabetical ascending} (or just \texttt{alphabetical})
+%\item \texttt{alphabetical descending}
+%\item \texttt{numerical ascending} (or just \texttt{numerical})
+%\item \texttt{numerical descending}
+%\end{itemize}
+%(Default: \texttt{sort=alphabetical ascending})
+%
+%\item[variable] The sort variable. (Default: \verb|sort=\field{1}|)
+%
+%\item[sfirstdataline] The line on which the data starts in a data
+%file without a header row. (Default: \texttt{sfirstdataline=1}.)
+%
+%\item[firstdataline] The line on which the data starts in a data
+%file with a header row. (Default: \texttt{firstdataline=2}.)
+%\end{description}
+%
+%Note that the \stynamefmt{csvsort} package requires
+%the \stynamefmt{xfor} package and \'Eamonn McManus'
+%\texttt{compare.tex} file. The \stynamefmt{csvsort} package uses
+%an insertion sort method to sort the data, so large amounts of data
+%may slow processing time. The following commands are provided
+%by \stynamefmt{csvsort}:
+%
+%\DescribeMacro{\sortapplyCSVfile}\noindent
+% \cmdname{sortapplyCSVfile}\oarg{options}\marg{filename}\marg{text}\par
+% \cmdname{sortapplyCSVfile*}\oarg{options}\marg{filename}\marg{text}\\[10pt]
+%These commands are analogous to \cmdname{applyCSVfile} and
+%\cmdname{applyCSVfile*}, except that the data is first sorted.
+%The optional argument is a key=value list. The keys are the same
+%as those used in the package options, described above. These options
+%only apply to the given instance of the command, whereas the
+%package options apply to all \stynamefmt{csvsort} commands, unless
+%overridden in \meta{options}. Example, suppose you have a file
+%called \texttt{unsorted.csv} which looks like:
+%\begin{verbatim}
+%First Name,Surname,Age
+%Zephram,Lang,60
+%Fred,Lang,10
+%Barney,Langley,25
+%Jane,Brown,5
+%Adam,Smith,24
+%Bert,Jones,18
+%\end{verbatim}
+%Then
+%\begin{verbatim}
+%\sortapplyCSVfile[sort=alphabetical,variable=\insertSurname]{unsorted.csv}{%
+%\insertSurname, \insertbyname{First Name}. Age: \insertAge\par}
+%\end{verbatim}
+%will produce the following output:\par
+%Brown, Jane. Age:5\par
+%Jones, Bart. Age:18\par
+%Lang, Zephram. Age:60\par
+%Lang, Fred. Age:10\par
+%Langley, Barney. Age:25\par
+%Smith, Adam. Age: 24\par
+%Note that the data has only been sorted according to the surname.
+%To sort first by surname, then by first name, you can
+%do something like:
+%\begin{verbatim}
+%\sortapplyCSVfile[sort=alphabetical,
+%variable={\insertSurname,\insertbyname{First Name}}]{unsorted.csv}{%
+%\insertSurname, \insertbyname{First Name}. Age: \insertAge\par}
+%\end{verbatim}
+%As with \cmdname{applyCSVfile}, you must use \cmdname{field} if
+%you use the starred version:
+%\begin{verbatim}
+%\sortapplyCSVfile*[sort=alphabetical,
+%variable={\field{2},\field{1}}]{unsorted.csv}{%
+%\field{2}, \field{1}. Age: \field{3}\par}
+%\end{verbatim}
+%
+%The commands:\\[10pt]\DescribeMacro{\sortCSVtotabular}
+%\cmdname{sortCSVtotabular}\oarg{options}\marg{filename}\marg{col-spec}\marg{first row}\marg{all but last row}\marg{last row}\\
+%\DescribeMacro{\sortCSVtolongtable}
+%\cmdname{sortCSVtolongtable}\oarg{options}\marg{filename}\marg{col-spec}\marg{first row}\marg{all but last row}\marg{last row}\\
+%Are analogous to \cmdname{CSVtotabular} and \cmdname{CSVtolongtable},
+%where, again, \meta{options} is a list of key=value pairs, the same
+%as \cmdname{sortapplyCSVfile}. Using the same example data as above,
+%the following command will sort the data according to age (in
+%numerical order) and place in a tabular environment:
+%\begin{verbatim}
+%\sortCSVtotabular[sort=numerical,variable=\insertAge]{unsorted.csv}{llr}{%
+%\bfseries Surname & \bfseries First Name & \bfseries Age\\}{%
+%\insertSurname & \insertbyname{First Name} & \insertAge\\}{%
+%\insertSurname & \insertbyname{First Name} & \insertAge}
+%\end{verbatim}
+%
+%Note that the counter \texttt{csvlinenum} has no meaning in the
+%commands provided by the \stynamefmt{csvsort} package. The
+%\texttt{csvrownumber} counter corresponds to the sorted data row.
+%
+%\section{The csvtools.pl Perl Script}
+%
+% Suppose you have several large CSV files, and you have included 
+%the information into your document using \cmdname{applyCSVfile}, 
+%\cmdname{CSVtolongtable}, \cmdname{CSVtotabular} or
+%\cmdname{csvpiechart}, which has 
+%made life so much easier for you, but you are now required by a 
+%journal to submit your source code in a single \texttt{.tex} file.
+% They don't want all your CSV files, so what do you do?  If you 
+%have Perl installed on your system you can use the 
+%\texttt{csvtools.pl} Perl script.  This has the following syntax:\\[5pt]
+% \texttt{csvtools.pl} \meta{in-file} \meta{out-file}\\[5pt]
+% where \meta{in-file} is the name of your file that contains the 
+%\cmdname{applyCSVfile}, \cmdname{CSVtotabular} etc
+% commands, and \meta{out-file} is a new file which will be created by \texttt{csvtools.pl}.  This new
+% file will be the same as \meta{in-file} except that all 
+%occurances of \cmdname{applyCSVfile}, \cmdname{CSVtolongtable}, 
+%\cmdname{CSVtotabular} and \cmdname{csvpiechart} will be replaced 
+%by the relevant data extracted from the named CSV files.
+%
+%\begin{example}{csvtools.pl --- Aligning Data}{ex:perl}
+% Suppose the file \texttt{mydoc.tex} contains the code given in 
+%Example~\ref{ex:tab1}, with the associated CSV file 
+%\texttt{sample.csv} also given in that example.  Then if you do:
+%\begin{verbatim}
+%csvtools.pl mydoc.tex mydocnew.tex
+%\end{verbatim}
+%the file \texttt{mydocnew.tex} will be created which will be 
+%identical to \texttt{mydoc.tex} except the lines
+% containing the code \verb'\CSVtotabular{sample.csv}{lccc}{'\ldots\verb/}{/\dots\verb!}{!\ldots\verb+}+ will be replaced
+%with the lines:
+%\begin{verbatim}
+% % \CSVtotabular{sample.csv}... converted using csvtools.pl
+% %>> START INSERT
+% \begin{tabular}{lccc}
+% \bfseries Name &
+% \bfseries Assignment 1 &
+% \bfseries Assignment 2 &
+% \bfseries Total\\
+% A. Smith&80&70&150\\
+% B. Jones&60&80&140\\
+% J. Doe&85&75&160\\
+%  &75&75&150
+% \end{tabular}%<< END INSERT
+%\end{verbatim}
+%\end{example}
+%
+%Similarly, \texttt{csvtools.pl} will substitute all occurrances 
+%of \cmdname{CSVtolongtable}, \cmdname{applyCSVfile} 
+%and \cmdname{csvpiechart}.
+%
+%\subsection{Notes}
+%\begin{enumerate}
+%\item If perl is located in a directory other than \texttt{/usr/bin/} 
+%you will need to edit the first line of \texttt{csvtools.pl} as 
+%appropriate. You can find the location using the command:
+%\begin{verbatim}
+%which perl
+%\end{verbatim}
+%
+%\item If you can't directly execute a Perl script,
+% you can do:\\[5pt]
+% \texttt{perl csvtools.pl} \meta{in-file} \meta{out-file}
+%
+%\item You must first \LaTeX\ your document before using 
+%\texttt{csvtools.pl} as it checks the log file for any counters 
+%that have been defined.
+%
+%\item \texttt{csvtools.pl} only knows about a very limited set 
+%of \LaTeX\ commands.  It should be able to understand:
+%\begin{verbatim}
+%\CSVtotabular{\csvGetEntry{experiment}{File}}{ll}{...
+%\end{verbatim}
+%(see Example~\ref{ex:index}), but it won't be able to understand,
+%say,
+%\begin{verbatim}
+%\newcommand{\filename}{\csvGetEntry{experiment}{File}}
+%\CSVtotabular{\filename}{ll}{...
+%\end{verbatim}
+%It can pick up on \cmdname{addtocounter}, \cmdname{stepcounter},
+%\cmdname{refstepcounter} and \cmdname{setcounter} but only if 
+%they are used explicitly in the named \texttt{.tex} file. (It 
+%ignores any files that have been included using 
+%\cmdname{input}, \cmdname{include} etc.)
+%
+%\item This Perl script has only been tested under Linux, but it 
+%ought to work under other systems.
+%\end{enumerate}
+%
+% \section{Bugs/Drawbacks/``Features''}\label{sec:drawbacks}
+% \begin{enumerate}
+% \item\label{itm:insert}
+% The package doesn't check to see whether 
+%\cmdname{insert}\meta{identifier} exists, otherwise you would not
+%be able to use multiple CSV files with the same headers, as in 
+%Example~\ref{ex:index}.  Therefore it is recommended that
+% you check to make sure that the command does not already exist.
+% For example, the \TeX\ commands \cmdname{insert} and 
+%\cmdname{insertpenalties} already exist, so a blank header or a 
+%header named \texttt{penalties} would cause problems. (These two 
+%will now cause an error as from version 1.1, but it's something 
+%bear in mind.)
+%
+% \item Note also that \cmdname{insertbyname} doesn't check
+% if you've given a valid label, so if no text appears,
+% check you've spelt it correctly, checking punctuation, spaces and case.
+%
+% \item\label{itm:psbyname}
+% Note that in Example~\ref{ex:ps}, replacing line~3 with:
+%\begin{verbatim}
+%\centerline{\includegraphics{\insertbyname{File}}}
+%\end{verbatim}
+% will cause an error, as \verb/\insertbyname{File}/ doesn't get
+% fully expanded by the time it gets passed to 
+% \cmdname{includegraphics}, and will prevent 
+%\cmdname{includegraphics} from
+% finding the file.  It is possible to get around this using
+% \TeX's \cmdname{edef} command:
+%\begin{verbatim}
+%\edef\psfilename{\insertbyname{File}}
+%\centerline{\includegraphics{\psfilename}}
+%\end{verbatim}
+%
+% \item\label{itm:noalign} You can't have commands like 
+%\cmdname{hline}, \cmdname{cline} and \cmdname{multicolumn} in the
+%first column of the \meta{middle} or \meta{last} code of 
+%\cmdname{CSVtotabular} or \cmdname{CSVtolongtable}.  If you do, 
+%it will generate a \verb/misplaced \noalign/ error, instead you 
+%need to put it at the end of the \meta{first} or \meta{middle} 
+%code.  (See Example~\ref{ex:tab3}.)
+%
+% \item You can't have nested \cmdname{applyCSVfile}, 
+%\cmdname{CSVtolongtable} and \cmdname{CSVtotabular}
+% commands. Nor can you have \cmdname{csvpiechart} within
+%one of these commands (See Example~\ref{ex:index})
+%
+% \item If the CSV file has a header row, it must be on the first 
+%line.
+%
+% \item It is possible for \TeX\ to run out of memory if you use
+% \cmdname{csvSaveEntry} on a large file.
+%
+% \item\label{itm:csvrownumber} In version 1.0, there was an 
+%inconsistency with \texttt{csvrownumber} within
+%\cmdname{applyCSVfile} and \cmdname{CSVtotabular}.  In the 
+%former it excluded the header row, whereas the latter
+%included it.  This has been changed in version 1.1 so that within
+%\cmdname{applyCSVfile}, \cmdname{CSVtotabular} and 
+%\cmdname{CSVtolongtable}, \texttt{csvrownumber} refers to the 
+%data row (excluding header row.)  I hope this doesn't cause 
+%problems, but it makes more sense that they should be 
+%consistent.  So if you have no blank lines in your CSV file, 
+%\texttt{csvrownumber} should always be 1 more than 
+%\texttt{csvlinenumber}.
+%
+%\end{enumerate}
+%
+% \section{Contact Details}
+%
+% Dr Nicola Talbot\\
+% School of Computing Sciences\\
+% University of East Anglia\\
+% Norwich.  NR4 7TJ. England.
+% \\[10pt]
+% \url{http://theoval.cmp.uea.ac.uk/~nlct/}
+%
+%\StopEventually{\PrintIndex\addcontentsline{toc}{section}{Index}}
+%
+%
+%
+%\section{The Code}
+%\iffalse
+%    \begin{macrocode}
+%<*csvtools.sty>
+%    \end{macrocode}
+%\fi
+%\subsection{csvtools.sty}
+% Declare package
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{csvtools}[2007/07/03 v1.24 (NLCT)]
+%    \end{macrocode}
+% Required packages
+%    \begin{macrocode}
+\RequirePackage{ifthen}
+\RequirePackage{longtable}
+%    \end{macrocode}
+% Define command to set the separator character.
+%    \begin{macrocode}
+\newcommand*{\@csvseparator}{,}
+\newcommand*{\setcsvseparator}[1]{%
+\renewcommand*{\@csvseparator}{#1}%
+\construct@lopoff{#1}%
+\@construct@qlopoff{#1}%
+\@construct@lopoff{#1}}
+%    \end{macrocode}
+% Define command to remove first element from list. CSV files 
+% usually use double quote characters to enclose entries containing 
+% a comma. The first argument is the control sequence containing
+% the list, the second argument is the control sequence to
+% contain the first item in the list.
+%    \begin{macrocode}
+\newcommand*{\extractentry}[2]{%
+\expandafter\csvlopoff#1\to{#1}{#2}}
+%    \end{macrocode}
+% The definitions are constructed on the fly to allow for
+% different separators. The argument is the separator.
+%\changes{1.23}{2007 May 23}{'csvlopoff changed to a long command}
+%    \begin{macrocode}
+\edef\construct@lopoff#1{%
+\noexpand\long\noexpand\def\noexpand\csvlopoff#1##1##2\noexpand\to##3##4{%
+\noexpand\ifx"##1\noexpand\relax
+\noexpand\@csv@qlopoff#1##1##2\noexpand\to##3##4\relax
+\noexpand\else
+\noexpand\@csv@lopoff#1##1##2\noexpand\to##3##4\relax
+\noexpand\fi
+}}
+%    \end{macrocode}
+% Command to contruct control sequence to be used when the
+% entry is surrounded by double quotes.
+%\changes{1.23}{2007 May 23}{'@csv@qlopoff changed to a long command}
+%    \begin{macrocode}
+\edef\@construct@qlopoff#1{%
+\noexpand\long\noexpand\def\noexpand\@csv@qlopoff#1"##1"#1##2\noexpand\to##3##4{%
+\noexpand\def##4{##1}\noexpand\def##3{#1##2}}}
+%    \end{macrocode}
+% Command to construct control sequence to be used when the
+% entry isn't surrounded by double quotes.
+%\changes{1.23}{2007 May 23}{'@csv@lopoff changed to a long command}
+%    \begin{macrocode}
+\edef\@construct@lopoff#1{%
+\noexpand\long\noexpand\def\noexpand\@csv@lopoff#1##1#1##2\noexpand\to##3##4{%
+\noexpand\def##4{##1}\noexpand\def##3{#1##2}}}
+%    \end{macrocode}
+% Set the default separator:
+%    \begin{macrocode}
+\setcsvseparator{,}
+%    \end{macrocode}
+% Define some variables
+%    \begin{macrocode}
+\newread\csvfile
+\newif\ifmore
+\newcount\c@field
+\newcount\c@maxfields
+\newcounter{csvlinenum}
+\newcount\maxlines
+\newcount\csvlastbutone
+\newcounter{csvrownumber}
+\toksdef\csv@tb=2
+%    \end{macrocode}
+% Define commands to access element in current row.
+% Access element by column number:
+%    \begin{macrocode}
+\newcommand{\field}[1]{\csname @field\romannumeral#1\endcsname}
+%    \end{macrocode}
+% Set field (header) label, the first argument is the index, second argument is the header for that column.)
+%    \begin{macrocode}
+\newcommand{\setcsvfieldlabel}[2]{%
+\expandafter\def\csname @fieldlabel\romannumeral#1\endcsname{#2}}
+%    \end{macrocode}
+% Access element by header:
+%    \begin{macrocode}
+\newcommand{\insertbyname}[1]{\csname insert#1\endcsname}
+%    \end{macrocode}
+% Define command to trim trailing space (caused by EOL) in argument. 
+% Argument should be a command name containing the current line.
+%    \begin{macrocode}
+\newcommand{\trim}[1]{\def\@trmstr{}%
+\def\csv@trmarg{#1}%
+\if\par\csv@trmarg
+\else
+\expandafter\@trim#1\end
+\let#1\@trmstr
+\fi
+}
+\long\def\@trim#1 \end{\def\@trmstr{#1}}
+%    \end{macrocode}
+% Define "\applyCSVfile"
+%    \begin{macrocode}
+\newcommand{\applyCSVfile}{\@ifstar\@sapplyCSVfile\@applyCSVfile}
+%    \end{macrocode}
+% Starred version of "\applyCSVfile":
+%    \begin{macrocode}
+\newcommand{\@sapplyCSVfile}[3][1]{%
+\IfFileExists{#2}{%
+\openin\csvfile=#2
+\ifeof\csvfile\morefalse\else\moretrue\fi
+\ifmore
+{\c@csvlinenum=1\relax
+\global\c@csvrownumber=0\relax
+\loop
+\read\csvfile to\csvline
+\advance\c@csvlinenum by 1\relax
+\ifnum\c@csvlinenum>#1\relax
+\trim{\csvline}%
+\csv@tb=\expandafter{\csvline}%
+\edef\@csvlin@{\@csvseparator\the\csv@tb\@csvseparator}%
+\c@field = 0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator\par\@csvseparator} \and 
+\not\equal{\@csvlin@}{\@csvseparator\@csvseparator} \and 
+\not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\csv@tb=\expandafter{\param}%
+\advance\c@field by 1\relax
+\expandafter\xdef\csname @field\romannumeral\c@field\endcsname{%
+\the\csv@tb}%
+}%
+\ifthenelse{\not\equal{\csvline}{\par} \and 
+\not\equal{\csvline}{}}{%
+\refstepcounter{csvrownumber}\relax
+#3}{}%
+\fi
+\ifeof\csvfile\morefalse\else\moretrue\fi
+\ifmore
+\repeat}%
+\closein\csvfile
+\fi
+}{\PackageError{csvtools}{Can't find file '#2'}{}}%
+}
+%    \end{macrocode}
+% Unstarred version:
+%    \begin{macrocode}
+\newcommand{\@applyCSVfile}[3][2]{%
+\ifnum#1<2\relax
+\PackageError{csvtools}{Header line required}{The optional 
+argument to `\string\applyCSVfile' needs to be > 1.  The header 
+line should be on line 1}%
+\else
+\IfFileExists{#2}{%
+\openin\csvfile=#2
+\ifeof\csvfile\morefalse\else\moretrue\fi
+\ifmore
+\global\c@csvlinenum=1\relax
+\global\c@csvrownumber=0\relax
+\global\c@maxfields=0\relax
+{\loop
+\read\csvfile to\csvline
+\trim{\csvline}%
+\ifnum\c@csvlinenum=1\relax
+\ifthenelse{\not\equal{\csvline}{\par} \and 
+\not\equal{\csvline}{}}{%
+\csv@tb=\expandafter{\csvline}\relax
+\edef\@csvlin@{\@csvseparator\the\csv@tb\@csvseparator}%
+\c@field=0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator\par\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\advance\c@field by 1\relax
+\csv@tb=\expandafter{\param}\relax
+\expandafter
+\xdef\csname @fieldlabel\romannumeral\c@field\endcsname{\the\csv@tb}%
+}%
+\c@maxfields=\c@field
+}{%
+\PackageError{csvtools}{Header line missing in file #2}{Header 
+line required on line 1}}%
+\fi
+\c@field=0\relax
+\whiledo{\c@field < \c@maxfields}{%
+\advance\c@field by 1\relax
+\expandafter\let\csname @field\romannumeral\c@field\endcsname\relax%
+\edef\@fieldlabel{%
+\csname @fieldlabel\romannumeral\c@field\endcsname}%
+\ifthenelse{\equal{\@fieldlabel}{}
+\TE@or \equal{\@fieldlabel}{penalties}
+\TE@or \equal{\@fieldlabel}{byname}}{\PackageError{csvtools}{%
+\string\insert\@fieldlabel \space already defined}{%
+You can't have the label '\@fieldlabel' in your header row.}}{}%
+\expandafter\let\csname insert\@fieldlabel\endcsname\relax%
+}%
+\advance\c@csvlinenum by 1\relax
+\ifnum\c@csvlinenum>#1\relax
+\csv@tb=\expandafter{\csvline}\relax
+\edef\@csvlin@{\@csvseparator\the\csv@tb\@csvseparator}%
+\c@field=0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator\par\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\csv@tb=\expandafter{\param}\relax
+\advance\c@field by 1\relax
+\expandafter
+\xdef\csname @field\romannumeral\c@field\endcsname{\the\csv@tb}%
+\edef\@fieldlabel{%
+\csname @fieldlabel\romannumeral\c@field\endcsname}%
+\ifthenelse{\equal{\@fieldlabel}{}
+\TE@or \equal{\@fieldlabel}{penalties}
+\TE@or \equal{\@fieldlabel}{byname}}{\PackageError{csvtools}{%
+\string\insert\@fieldlabel \space already defined}{%
+You can't have the label '\@fieldlabel' in your header row.}}{}%
+\expandafter\xdef\csname insert\@fieldlabel\endcsname{\the\csv@tb}%
+}%
+\ifthenelse{\not\equal{\csvline}{\par} 
+\and \not\equal{\csvline}{}}{%
+\global\advance\c@csvrownumber by 1\relax
+#3}{}%
+\fi
+\ifeof\csvfile\morefalse\else\moretrue\fi
+\ifmore
+\repeat}%
+\closein\csvfile
+\fi
+}{\PackageError{csvtools}{Can't find file '#2'}{}}%
+\fi
+}
+%    \end{macrocode}
+% Define "\CSVtotabular". Inserts contents of csv file into a tabular
+% environment.
+%    \begin{macrocode}
+\newcommand{\CSVtotabular}[5]{%
+\openin\csvfile=#1
+\c@csvlinenum=0\relax
+\loop
+\advance\c@csvlinenum by 1\relax
+\read\csvfile to\csvline
+\expandafter
+\xdef\csname @csvline\romannumeral\c@csvlinenum\endcsname{\csvline}%
+\ifthenelse{\not\equal{\csvline}{\par}}{\trim{\csvline}}{}%
+\ifnum\c@csvlinenum=1\relax
+\csv@tb=\expandafter{\csvline}
+\edef\@csvlin@{\@csvseparator\the\csv@tb\@csvseparator}%
+\c@field = 0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator\par\@csvseparator}%
+\and \not\equal{\@csvlin@}{\@csvseparator\@csvseparator}%
+\and \not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\csv@tb=\expandafter{\param}%
+\advance\c@field by 1\relax
+\expandafter\xdef\csname insert\the\csv@tb\endcsname{%
+\noexpand\field{\the\c@field}}%
+}%
+\fi
+\csv@tb=\expandafter{\csvline}%
+\edef\@csvlin@{\@csvseparator\the\csv@tb\@csvseparator}%
+\c@field = 0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator\par\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\csv@tb=\expandafter{\param}
+\advance\c@field by 1\relax
+\expandafter
+\xdef\csname @l\romannumeral\c@csvlinenum @field\romannumeral\c@field\endcsname{\the\csv@tb}%
+}%
+\ifeof\csvfile\morefalse\else\moretrue\fi
+\ifmore
+\repeat
+\closein\csvfile
+{%
+\def\field##1{%
+\csname @l\romannumeral\c@csvlinenum @field\romannumeral##1\endcsname}%
+\def\@r@wh{\begin{tabular}{#2}#3}%
+\def\@r@w{#4}%
+\def\@r@wl{#5\end{tabular}}%
+\maxlines=\c@csvlinenum
+\advance\maxlines by -1\relax
+\csvlastbutone=\maxlines
+\advance\csvlastbutone by -1\relax
+\c@csvlinenum=1\relax
+\setcounter{csvrownumber}{0}\relax
+\whiledo{\not{\c@csvlinenum>\maxlines}}{%
+\ifthenelse{\expandafter\equal{%
+\csname @csvline\romannumeral\c@csvlinenum\endcsname}{\par}}%
+{\relax}{%
+\ifnum\c@csvlinenum=1\relax
+\@r@wh
+\else
+\refstepcounter{csvrownumber}%
+\ifnum\c@csvlinenum=\maxlines\@r@wl\else\@r@w\fi
+\fi}%
+\global\advance\c@csvlinenum by 1\relax
+}\relax
+}}
+%    \end{macrocode}
+% Define "\CSVtolongtable". Similar to the above, but uses a 
+% longtable environment.
+%    \begin{macrocode}
+\newcommand{\CSVtolongtable}[5]{%
+\openin\csvfile=#1
+\c@csvlinenum=0\relax
+\loop
+\advance\c@csvlinenum by 1\relax
+\read\csvfile to\csvline
+\expandafter
+\xdef\csname @csvline\romannumeral\c@csvlinenum\endcsname{\csvline}%
+\ifthenelse{\not\equal{\csvline}{\par}}{\trim{\csvline}}{}%
+\ifnum\c@csvlinenum=1\relax
+\csv@tb=\expandafter{\csvline}%
+\edef\@csvlin@{\@csvseparator\the\csv@tb\@csvseparator}%
+\c@field = 0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator\par\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\csv@tb=\expandafter{\param}%
+\advance\c@field by 1\relax
+\expandafter
+\xdef\csname insert\the\csv@tb\endcsname{%
+\noexpand\field{\the\c@field}}%
+}%
+\fi
+\csv@tb=\expandafter{\csvline}%
+\edef\@csvlin@{\@csvseparator\the\csv@tb\@csvseparator}%
+\c@field = 0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator\par\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator\@csvseparator}
+\and \not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\csv@tb=\expandafter{\param}%
+\advance\c@field by 1\relax
+\expandafter
+\xdef\csname @l\romannumeral\c@csvlinenum @field\romannumeral\c@field\endcsname{\the\csv@tb}%
+}%
+\ifeof\csvfile\morefalse\else\moretrue\fi
+\ifmore
+\repeat
+\closein\csvfile
+{\def\field##1{%
+\csname @l\romannumeral\c@csvlinenum @field\romannumeral##1\endcsname}%
+\def\@r@wh{\begin{longtable}{#2}#3}%
+\def\@r@w{#4}%
+\def\@r@wl{#5\end{longtable}}%
+\maxlines=\c@csvlinenum
+\advance\maxlines by -1\relax
+\csvlastbutone=\maxlines
+\advance\csvlastbutone by -1\relax
+\c@csvlinenum=1\relax
+\setcounter{csvrownumber}{0}\relax
+\whiledo{\not{\c@csvlinenum>\maxlines}}{%
+\ifthenelse{\expandafter\equal{%
+\csname @csvline\romannumeral\c@csvlinenum\endcsname}{\par}}%
+{\relax}{%
+\ifnum\c@csvlinenum=1\relax
+\@r@wh
+\else
+\refstepcounter{csvrownumber}%
+\ifnum\c@csvlinenum=\maxlines\@r@wl\else\@r@w\fi
+\fi}%
+\global\advance\c@csvlinenum by 1\relax
+}\relax
+}}
+%    \end{macrocode}
+% Define a command to determine if on the penultimate row
+%    \begin{macrocode}
+\newcommand{\ifnextrowlast}[2]{%
+\ifnum\c@csvlinenum=\csvlastbutone#1\else#2\fi}
+%    \end{macrocode}
+% Define means to store entry for later use
+%    \begin{macrocode}
+\newcommand{\csvSaveEntry}[2][csvrownumber]{%
+\@ifnextchar[{\@csvSaveEntry{#1}{#2}}{%
+\@csvSaveEntry{#1}{#2}[\insertbyname{#2}]}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\@csvSaveEntry#1#2[#3]{%
+\edef\@csv@tmp{\insertbyname{#2}}%
+\if\relax\@csv@tmp\relax
+\edef\@entry{#3}%
+\else
+\edef\@entry{\insertbyname{#2}}%
+\fi
+\expandafter
+\xdef\csname #2\romannumeral\value{#1}\endcsname{\@entry}}
+%    \end{macrocode}
+% Define means to access stored entry.
+%    \begin{macrocode}
+\newcommand{\csvGetEntry}[2]{%
+\csname #2\romannumeral\value{#1}\endcsname}
+%    \end{macrocode}
+%\iffalse
+%    \begin{macrocode}
+%</csvtools.sty>
+%    \end{macrocode}
+%\fi
+%\iffalse
+%    \begin{macrocode}
+%<*csvpie.sty>
+%    \end{macrocode}
+%\fi
+%\subsection{csvpie.sty}
+% Declare package.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{csvpie}[2006/09/01 v1.0]
+%    \end{macrocode}
+% Declare options.
+%    \begin{macrocode}
+\newif\ifcolorpiechart
+\colorpiecharttrue
+\DeclareOption{color}{\colorpiecharttrue}
+\DeclareOption{monochrome}{\colorpiechartfalse}
+%    \end{macrocode}
+% Process options
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+% Specify required packages
+%    \begin{macrocode}
+\RequirePackage{csvtools}
+\RequirePackage{tikz}
+\RequirePackage{calc}
+\RequirePackage{keyval}
+%    \end{macrocode}
+% Define some variables
+%    \begin{macrocode}
+\newlength\csvradius
+\newlength\csvinner
+\newlength\csvouter
+\newlength\csvcutawayoffset
+\newcounter{csvstartangle}
+\newcounter{csvendangle}
+\newcounter{csvangle}
+\newcounter{csvpietotal}
+%    \end{macrocode}
+% Set default values.
+%    \begin{macrocode}
+\newcommand*{\csvpiedefaults}{radius=2cm,inner=0.25,outer=1.25,%
+cutaway={},total=100,start=0,offset=0.1}
+%    \end{macrocode}
+% Define command to specify inner and outer labels.
+% The default puts the entry in column 1 (usually the label)
+% in the outer area, and the entry in column 2 (usually the
+% value) in the inner area. These can be redefined by the user
+% to use other variables, or change the format etc.
+%    \begin{macrocode} 
+\newcommand{\csvpieouterlabel}{\field{1}}
+\newcommand{\csvpieinnerlabel}{\field{2}\%}
+%    \end{macrocode}
+% Define command to store list of row numbers corresponding to
+% cut away segments. (Segments that have been offset from the
+% pie chart.) By default, none of the segments should be cut away.
+%    \begin{macrocode}
+\newcommand*{\csvpiecutaways}{}
+%    \end{macrocode}
+% Define a command to assign colour name "#2" to segment number "#1"
+%    \begin{macrocode}
+\newcommand*{\csvpiesegmentcol}[2]{%
+\expandafter\def\csname csvpie@segcol\romannumeral#1\endcsname{#2}}
+%    \end{macrocode}
+% Define command to get colour name assigned to segment number "#1"
+%    \begin{macrocode}
+\newcommand*{\csvpiesegcolname}[1]{%
+\csname csvpie@segcol\romannumeral#1\endcsname}
+%    \end{macrocode}
+% Set default colours. These can be changed by the user. More colours
+% can be added in a similar manner if there are more than 8 segments.
+%    \begin{macrocode}
+\ifcolorpiechart
+\csvpiesegmentcol{1}{red}
+\csvpiesegmentcol{2}{green}
+\csvpiesegmentcol{3}{blue}
+\csvpiesegmentcol{4}{yellow}
+\csvpiesegmentcol{5}{magenta}
+\csvpiesegmentcol{6}{cyan}
+\csvpiesegmentcol{7}{orange}
+\csvpiesegmentcol{8}{white}
+\else
+\csvpiesegmentcol{1}{black!15}
+\csvpiesegmentcol{2}{black!25}
+\csvpiesegmentcol{3}{black!35}
+\csvpiesegmentcol{4}{black!45}
+\csvpiesegmentcol{5}{black!55}
+\csvpiesegmentcol{6}{black!65}
+\csvpiesegmentcol{7}{black!75}
+\csvpiesegmentcol{8}{black!85}
+\fi
+%    \end{macrocode}
+% Define keys for "\csvpiechart" optional argument
+%    \begin{macrocode}
+\define@key{csvpie}{start}{\setcounter{csvstartangle}{#1}}
+\define@key{csvpie}{total}{\setcounter{csvpietotal}{#1}}
+\define@key{csvpie}{radius}{\setlength{\csvradius}{#1}}
+\define@key{csvpie}{inner}{\setlength{\csvinner}{#1\csvradius}}
+\define@key{csvpie}{outer}{\setlength{\csvouter}{#1\csvradius}}
+\define@key{csvpie}{offset}{\setlength{\csvcutawayoffset}{#1\csvradius}}
+\define@key{csvpie}{cutaway}{\renewcommand*{\csvpiecutaways}{#1}}
+\providecommand*{\csv@startrow}{1}
+\define@key{csvpie}{firstrow}{\renewcommand*{\csv@startrow}{#1}}
+%    \end{macrocode}
+% Define "\csvpiechart". The starred version uses "\applyCSVfile*",
+% the unstarred version uses "\applyCSVfile".
+%    \begin{macrocode}
+\newcommand{\csvpiechart}{%
+\@ifstar{\def\@@pieapplyCSVfile{\applyCSVfile*}%
+\def\csv@startrow{1}%
+\@csvpiechart}{%
+\def\@@pieapplyCSVfile{\applyCSVfile}%
+\def\csv@startrow{2}%
+\@csvpiechart}%
+}
+%    \end{macrocode}
+% Set the keys for pie chart:
+%    \begin{macrocode}
+\newcommand*{\csvpiesetkeys}[1]{%
+\edef\csv@piesk{\noexpand\setkeys{csvpie}{\csvpiedefaults,#1}}%
+\csv@piesk}
+%    \end{macrocode}
+% The main body of "\csvpiechart".
+%    \begin{macrocode}
+\newcommand{\@csvpiechart}[3][]{%
+{\csvpiesetkeys{#1}%
+\edef\csv@startang{\number\c@csvstartangle}%
+\csv@computeangles{#2}{#3}%
+\setcounter{csvstartangle}{\csv@startang}%
+\begin{tikzpicture}%
+\@@pieapplyCSVfile[\csv@startrow]{#3}{%
+\csvpiesegment{#2}}%
+\end{tikzpicture}%
+}}
+%    \end{macrocode}
+% Do individual segment in pie chart.
+%    \begin{macrocode}
+\newcommand*{\csvpiesegment}[1]{%
+\setcounter{csvstartangle}{%
+\csname csv@sang@\romannumeral\c@csvrownumber\endcsname}%
+\setcounter{csvangle}{%
+\csname csv@angle@\romannumeral\c@csvrownumber\endcsname}%
+\setcounter{csvendangle}{\value{csvangle} + \value{csvstartangle}}%
+\setcounter{csvangle}{%
+\csname csv@cut@angle\romannumeral\c@csvrownumber\endcsname}%
+\ifthenelse{\value{csvangle}>180}{\addtocounter{csvangle}{-360}}{}%
+\edef\@csv@shift{(\number\c@csvangle:%
+\csname csv@cut@len\romannumeral\c@csvrownumber\endcsname)}%
+\setcounter{csvangle}{%
+\csname csv@angle@\romannumeral\c@csvrownumber\endcsname/2
++\value{csvstartangle}}%
+\begin{scope}[shift={\@csv@shift}]%
+\fill[color=\csvpiesegcolname\c@csvrownumber] (0,0) --
+(\thecsvstartangle:\csvradius)
+arc (\thecsvstartangle:\thecsvendangle:\csvradius) -- cycle;
+% if 90 < csvangle < 270, the text will look upside-down, so
+% adjust accordingly. Reusing csvstartangle, to save defining
+% a new counter, as it's no longer required
+\ifthenelse{\(\value{csvangle}>90 \and \value{csvangle}<270\)
+\TE@or \value{csvangle}<-90}{%
+\setcounter{csvstartangle}{\value{csvangle}-180}%
+\draw (\thecsvangle:\csvinner)
+node[left,rotate=\thecsvstartangle]{\csvpieinnerlabel};
+\draw (\thecsvangle:\csvouter)
+node[left,rotate=\thecsvstartangle]{\csvpieouterlabel};
+}{%
+\draw (\thecsvangle:\csvinner)
+node[right,rotate=\thecsvangle]{\csvpieinnerlabel};
+\draw (\thecsvangle:\csvouter)
+node[right,rotate=\thecsvangle]{\csvpieouterlabel};
+}%
+\end{scope}%
+}
+%    \end{macrocode}
+% Compute the angles for each segment. First argument is 
+% variable, second argument is the name
+% of the CSV file.
+%    \begin{macrocode}
+\newcommand*{\csv@computeangles}[2]{%
+\@@pieapplyCSVfile[\csv@startrow]{#2}{%
+\csvsetsegmentparams{\c@csvrownumber}{#1}%
+}%
+\ifthenelse{\equal{\csvpiecutaways}{}}{}{\csvcomputeoffsets}}
+%    \end{macrocode}
+% Compute offset angles for cutaway segments.
+% "\csv@row" should either be a single number (e.g.\ "2")
+% or a number range (e.g.\ "1-2")
+%    \begin{macrocode}
+\newcommand*{\csvcomputeoffsets}{%
+\@for\csv@row:=\csvpiecutaways\do{%
+\expandafter\@csv@set@off\csv@row-\relax
+}}
+%    \end{macrocode}
+% Set the offset angle.
+%    \begin{macrocode}
+\def\@csv@set@off#1-#2\relax{%
+\ifthenelse{\equal{#2}{}}{%
+\@@csv@set@off{#1}}{%
+\@@csv@set@offr#1-#2\relax}%
+}
+%    \end{macrocode}
+% Set offset for individual segment:
+%    \begin{macrocode}
+\newcommand*{\@@csv@set@off}[1]{%
+\setcounter{csvangle}{%
+\csname csv@angle@\romannumeral#1\endcsname/2
++ \csname csv@sang@\romannumeral#1\endcsname}%
+\expandafter\xdef\csname csv@cut@angle\romannumeral#1\endcsname{%
+\number\c@csvangle}%
+\expandafter
+\gdef\csname csv@cut@len\romannumeral\csv@row\endcsname{%
+\csvcutawayoffset}%
+}
+%    \end{macrocode}
+% Set offset for range of segments:
+%    \begin{macrocode}
+\newcount\@csv@seg
+\def\@@csv@set@offr#1-#2-\relax{%
+\ifnum#1>#2\relax
+\PackageError{csvpie}{Segment ranges must go in ascending
+order}{Try #2-#1 instead of #1-#2}%
+\else
+\setcounter{csvangle}{0}%
+\@csv@seg=#1\relax
+\whiledo{\not\(\@csv@seg > #2\)}{%
+\addtocounter{csvangle}{%
+\csname csv@angle@\romannumeral\@csv@seg\endcsname}%
+\advance\@csv@seg by 1}%
+\setcounter{csvangle}{\value{csvangle}/2
++ \csname csv@sang@\romannumeral#1\endcsname}%
+\@csv@seg=#1\relax
+\whiledo{\not\(\@csv@seg > #2\)}{%
+\expandafter\xdef\csname csv@cut@angle\romannumeral\@csv@seg\endcsname{%
+\number\c@csvangle}%
+\expandafter
+\gdef\csname csv@cut@len\romannumeral\@csv@seg\endcsname{%
+\csvcutawayoffset}%
+\advance\@csv@seg by 1}%
+\fi
+}
+%    \end{macrocode}
+% Set the relevent variables required for "\csvpiesegment":
+% The first argument is the segment number, the second argument
+% is the variable. The "csvstartangle" counter is updated.
+% This command should be called sequentially, and is provided
+% for the convenience of \texttt{csvtools.pl}. 
+%    \begin{macrocode}
+\newcommand*{\csvsetsegmentparams}[2]{%
+\ifthenelse{\value{csvstartangle}>180}{%
+\addtocounter{csvstartangle}{-360}}{}%
+\ifthenelse{\value{csvstartangle}<-180}{%
+\addtocounter{csvstartangle}{360}}{}%
+\expandafter
+\xdef\csname csv@sang@\romannumeral#1\endcsname{%
+\number\c@csvstartangle}%
+\setcounter{csvangle}{360*\real{#2}/\value{csvpietotal}}%
+\addtocounter{csvstartangle}{\value{csvangle}}%
+\expandafter
+\xdef\csname csv@angle@\romannumeral#1\endcsname{%
+\number\c@csvangle}%
+\expandafter
+\gdef\csname csv@cut@angle\romannumeral#1\endcsname{0}%
+\expandafter
+\gdef\csname csv@cut@len\romannumeral#1\endcsname{0cm}%
+}
+%    \end{macrocode}
+%\iffalse
+%    \begin{macrocode}
+%</csvpie.sty>
+%    \end{macrocode}
+%\fi
+%\iffalse
+%    \begin{macrocode}
+%<*csvsort.sty>
+%    \end{macrocode}
+%\fi
+%\subsection{csvsort.sty}
+% Declare package:
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{csvsort}[2007/07/03 v1.0 (NLCT)]
+%    \end{macrocode}
+% If \cmdname{compare} hasn't been defined, use compare.tex
+%    \begin{macrocode}
+\@ifundefined{compare}{\input{compare}}{}
+%    \end{macrocode}
+% Define comparison commands. Each of the comparison commands must
+% set the boolean \cmdname{if@csv@ishigher}
+%    \begin{macrocode}
+\newif\if@csv@ishigher
+%    \end{macrocode}
+% Alphabetical ascending comparison:
+%    \begin{macrocode}
+\newcommand{\csv@alphaascendingcompare}[2]{%
+\@csv@extractkey#1{\@csv@keya}%
+\@csv@extractkey#2{\@csv@keyb}%
+\csvsort@verbose{Comparing \@csv@keya\space and \@csv@keyb}%
+\edef\@csvsrt@result{\noexpand\compare{\@csv@keya}{\@csv@keyb}}%
+\ifnum\@csvsrt@result=1\relax
+   \@csv@ishighertrue
+\else
+   \@csv@ishigherfalse
+\fi}
+%    \end{macrocode}
+% Alphabetical descending comparison:
+%    \begin{macrocode}
+\newcommand{\csv@alphadescendingcompare}[2]{%
+\@csv@extractkey#1{\@csv@keya}%
+\@csv@extractkey#2{\@csv@keyb}%
+\csvsort@verbose{Comparing \@csv@keya\space and \@csv@keyb}%
+\edef\@csvsrt@result{\noexpand\compare{\@csv@keya}{\@csv@keyb}}%
+\ifnum\@csvsrt@result=-1\relax
+   \@csv@ishighertrue
+\else
+   \@csv@ishigherfalse
+\fi}
+%    \end{macrocode}
+% Numerical ascending comparison:
+%    \begin{macrocode}
+\newcommand{\csv@numericascendingcompare}[2]{%
+\@csv@extractkey#1{\@csv@keya}%
+\@csv@extractkey#2{\@csv@keyb}%
+\if\relax\@csv@keya\relax\def\@csv@keya{0}\fi
+\if\relax\@csv@keyb\relax\def\@csv@keyb{0}\fi
+\csvsort@verbose{Comparing \number\@csv@keya\space and \number\@csv@keyb}%
+\ifnum\@csv@keya>\@csv@keyb\relax
+   \@csv@ishighertrue
+\else
+   \@csv@ishigherfalse
+\fi}
+%    \end{macrocode}
+% Numerical descending comparison:
+%    \begin{macrocode}
+\newcommand{\csv@numericdescendingcompare}[2]{%
+\@csv@extractkey#1{\@csv@keya}%
+\@csv@extractkey#2{\@csv@keyb}%
+\if\relax\@csv@keya\relax\def\@csv@keya{0}\fi
+\if\relax\@csv@keyb\relax\def\@csv@keyb{0}\fi
+\csvsort@verbose{Comparing \number\@csv@keya\space and \number\@csv@keyb}%
+\ifnum\@csv@keya<\@csv@keyb\relax
+   \@csv@ishighertrue
+\else
+   \@csv@ishigherfalse
+\fi}
+%    \end{macrocode}
+% The sort key needs to be extracted from the data (3rd argument
+% must be a control sequence):
+%    \begin{macrocode}
+\def\@csv@extractkey#1#2#3{\def#3{#1}}
+%    \end{macrocode}
+% Conversely, extract the data and ignore the sort key:
+%    \begin{macrocode}
+\def\@csv@extractdata#1#2#3{\def#3{#2}}
+%    \end{macrocode}
+% The command \cmdname{csv@compare} should be set to the
+% appropriate comparison command (\cmdname{csv@alphaascendingcompare}
+% by default.)
+%    \begin{macrocode}
+\let\csv@compare\csv@alphaascendingcompare
+%    \end{macrocode}
+% The package options are a comma-separated list of key=value
+% pairs, so need the \stynamefmt{xkeyval} package.
+%    \begin{macrocode}
+\RequirePackage{xkeyval}
+%    \end{macrocode}
+% Package options. Verbose mode:
+%    \begin{macrocode}
+\define@boolkey{csvsort.sty}[csvsrt]{verbose}[true]{}
+%    \end{macrocode}
+% Default is verbose:
+%    \begin{macrocode}
+\csvsrtverbosetrue
+%    \end{macrocode}
+% Define command to display message if verbose option is set:
+%    \begin{macrocode}
+\newcommand{\csvsort@verbose}[1]{%
+\ifcsvsrtverbose\typeout{#1}\fi}
+%    \end{macrocode}
+% Sort type (can be either numerical or alphabetical, ascending
+% or descending):
+%    \begin{macrocode}
+\define@choicekey{csvsort.sty}{sort}[\val\nr]{alphabetical,numerical,%
+alphabetical ascending,numerical ascending,%
+alphabetical descending,numerical descending,%
+alphabeticalascending,alphabeticaldescending,%
+numericalascending,numericaldescending}{%
+\ifcase\nr
+  % alphabetical (ascending)
+    \let\csv@compare\csv@alphaascendingcompare
+  \or
+  % numerical (ascending)
+    \let\csv@compare\csv@numericascendingcompare
+  \or
+  % alphabetical ascending
+    \let\csv@compare\csv@alphaascendingcompare
+  \or
+  % numerical ascending
+    \let\csv@compare\csv@numericascendingcompare
+  \or
+  % alphabetical descending
+    \let\csv@compare\csv@alphadescendingcompare
+  \or
+  % numerical descending
+    \let\csv@compare\csv@numericdescendingcompare
+  \or
+  % alphabeticalascending
+    \let\csv@compare\csv@alphaascendingcompare
+  \or
+  % alphabetical descending
+    \let\csv@compare\csv@alphadescendingcompare
+  \or
+  % numericalascending
+    \let\csv@compare\csv@numericascendingcompare
+  \or
+  % numericaldescending
+    \let\csv@compare\csv@numericdescendingcompare
+\fi}
+%    \end{macrocode}
+% The variable used to sort is given by:
+%    \begin{macrocode}
+\newcommand{\csv@sortvariable}{\field{1}}
+%    \end{macrocode}
+% A different variable can be set using the variable package option:
+%    \begin{macrocode}
+\define@key{csvsort.sty}{variable}{%
+\renewcommand{\csv@sortvariable}{#1}}
+%    \end{macrocode}
+% The first data line in CSV files with no headers is given by
+%    \begin{macrocode}
+\newcounter{sfirstdataline}
+%    \end{macrocode}
+% and defaults to line 1:
+%    \begin{macrocode}
+\setcounter{sfirstdataline}{1}
+%    \end{macrocode}
+% This value can be set using the "sfirstdataline" option:
+%    \begin{macrocode}
+\define@key{csvsort.sty}{sfirstdataline}{%
+\setcounter{sfirstdataline}{#1}}
+%    \end{macrocode}
+% The first data line in CSV files with headers is given by
+%    \begin{macrocode}
+\newcounter{firstdataline}
+%    \end{macrocode}
+% and defaults to line 2:
+%    \begin{macrocode}
+\setcounter{firstdataline}{2}
+%    \end{macrocode}
+% This value can be set using the "firstdataline" option:
+%    \begin{macrocode}
+\define@key{csvsort.sty}{firstdataline}{%
+\setcounter{firstdataline}{#1}}
+%    \end{macrocode}
+% Process package options:
+%    \begin{macrocode}
+\ProcessOptionsX
+%    \end{macrocode}
+% Required packages:
+%    \begin{macrocode}
+\RequirePackage{csvtools}
+\RequirePackage{xfor}
+%    \end{macrocode}
+% Insertion sort macro. The argument is a comma-separated list
+% in the form \marg{sort-key1}\marg{data1},\ldots,%
+%\marg{sort-keyN}\marg{dataN}. The list is sorted according to
+% \cmdname{csv@compare}
+%\begin{macro}{\csv@insertionsort}
+%    \begin{macrocode}
+\newcommand{\csv@insertionsort}[1]{%
+\let\@csv@sortedlist\relax
+\@for\@csv@listelement:=#1\do{%
+\if\@csv@sortedlist\relax
+  \expandafter\toks@\expandafter{\@csv@listelement}%
+  \edef\@csv@sortedlist{\the\toks@}%
+\else
+  \expandafter\@csv@insert@into\expandafter
+   {\@csv@listelement}{\@csv@sortedlist}%
+\fi}\let#1\@csv@sortedlist}
+%    \end{macrocode}
+%\end{macro}
+% Insert element (first argument) into a sorted list (second argument)
+% Each element must be in the form \marg{sort-key}\marg{data}, where
+% \cmdname{csv@compare} sorts according to \meta{sort-key}. The
+% insertion code ignores \meta{data}.
+%\begin{macro}{\@csv@insertinto}
+%    \begin{macrocode}
+\newcommand\@csv@insert@into[2]{%
+\let\@csv@tmplist\relax
+\@for\@sort@list@element:=#2\do{%
+ \expandafter\csv@compare\expandafter{\@sort@list@element}{#1}%
+ \if@csv@ishigher
+   \toks@{#1}%
+   \if\relax\@csv@tmplist
+     \edef\@csv@tmplist{\the\toks@,\@sort@list@element}%
+   \else
+     \edef\@csv@tmplist{\@csv@tmplist,\the\toks@,\@sort@list@element}%
+   \fi
+   \@endfortrue
+ \else
+   \if\relax\@csv@tmplist
+     \edef\@csv@tmplist{\@sort@list@element}%
+   \else
+     \edef\@csv@tmplist{\@csv@tmplist,\@sort@list@element}%
+   \fi
+ \fi
+}%
+\if@endfor
+  \ifx\@forremainder\@empty
+  \else
+    \edef\@csv@tmplist{\@csv@tmplist,\@forremainder}%
+  \fi
+\else
+  \toks@{#1}%
+  \if\relax\@csv@tmplist
+    \edef\@csv@tmplist{\the\toks@}%
+  \else
+    \edef\@csv@tmplist{\@csv@tmplist,\the\toks@}%
+  \fi
+\fi
+\@endforfalse
+\let#2\@csv@tmplist
+}
+%    \end{macrocode}
+%\end{macro}
+% Define \cmdname{sortapplyCSVfile}. This is akin to \stynamefmt{csvtools}'
+% \cmdname{applyCSVfile}, except it stores each data row in a list,
+% sorts the list, and then iterates through the sorted list. As
+% with, \cmdname{applyCSVfile}, the starred version should be used
+% for a file that doesn't contain a header row, and the un-starred
+% version should be used for a file that has a header row. Both
+% forms take an optional argument, which should be a key=value list,
+% the same as the package options, but they only apply to the
+% current instance of \cmdname{sortapplyCSVfile}.
+%\begin{macro}{\sortapplyCSVfile}
+%    \begin{macrocode}
+\newcommand{\sortapplyCSVfile}{%
+\@ifstar\@ssortapplyCSVfile\@sortapplyCSVfile}
+%    \end{macrocode}
+%\end{macro}
+% Starred version (see above):
+%\begin{macro}{\@ssortapplyCSVfile}
+%    \begin{macrocode}
+\newcommand{\@ssortapplyCSVfile}[3][]{%
+\bgroup
+\setkeys{csvsort.sty}{#1}%
+\def\@csv@list{}%
+\@sapplyCSVfile[\c@sfirstdataline]{#2}{%
+\edef\csv@key{\csv@sortvariable}%
+\if\relax\@csv@list\relax
+\protected@xdef\@csv@list{{\csv@key}{\csvline}}%
+\else
+\protected@xdef\@csv@list{\@csv@list,{\csv@key}{\csvline}}%
+\fi
+}%
+\@ssortapplyCSVdata{\@csv@list}{#3}%
+\egroup}
+%    \end{macrocode}
+%\end{macro}
+% Unstarred version (see above):
+%\begin{macro}{\@sortapplyCSVfile}
+%    \begin{macrocode}
+\newcommand{\@sortapplyCSVfile}[3][]{%
+\bgroup
+\setkeys{csvsort.sty}{#1}%
+\def\@csv@list{}%
+\@applyCSVfile[\c@firstdataline]{#2}{%
+\edef\csv@key{\csv@sortvariable}%
+\if\relax\@csv@list\relax
+\protected@xdef\@csv@list{{\csv@key}{\csvline}}%
+\else
+\protected@xdef\@csv@list{\@csv@list,{\csv@key}{\csvline}}%
+\fi
+}%
+\@sortapplyCSVdata{\@csv@list}{#3}%
+\egroup}
+%    \end{macrocode}
+%\end{macro}
+% \cmdname{sortapplyCSVdata}\oarg{sort type}\marg{cmd}\marg{text}
+% will sort the data given by \meta{cmd}, which should contain 
+% a comma separated
+% list of the form \marg{sort1}\marg{data1},\ldots\marg{sortN}\marg{dataN}
+% and the applies \meta{text} to each data element of the list.
+% The sort ordering is specified by \meta{sort type}, which should
+% have the same values as the sort key used by 
+% \cmdname{sortapplyCSVfile}.
+%  The starred version doesn't permit
+% \cmdname{insert}\meta{label} commands. First argument is the list,
+% the second argument specifies what to do for each data element.
+% (Note, these commands are primarily provided for the
+% benefit of \texttt{csvtools.pl}, which is why they're not
+% documented in the main part of the \stynamefmt{csvtools} manual.)
+%\begin{macro}{\sortapplyCSVdata}
+%    \begin{macrocode}
+\newcommand{\sortapplyCSVdata}{%
+\@ifstar\@ssortapplyCSVdata\@sortapplyCSVdata}
+%    \end{macrocode}
+%\end{macro}
+% Starred version:
+%\begin{macro}{\@ssortapplyCSVdata}
+%    \begin{macrocode}
+\newcommand{\@ssortapplyCSVdata}[3][\relax]{%
+\bgroup
+\if\relax#1\relax\else\setkeys{csvsort.sty}{sort=#1}\fi
+\csv@insertionsort{#2}%
+\c@csvrownumber=0\relax
+\@for\@csv@element:=#2\do{%
+\expandafter\@csv@extractdata\@csv@element\csvline
+\expandafter\toks@\expandafter{\csvline}%
+\edef\@csvlin@{\@csvseparator\the\toks@\@csvseparator}%
+\long\edef\@csvlin@{\@csvseparator\csvline\@csvseparator}%
+\c@field=0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\expandafter\toks@\expandafter{\param}%
+\advance\c@field by 1\relax
+\expandafter\xdef\csname @field\romannumeral\c@field\endcsname{%
+\the\toks@}%
+}%
+\ifthenelse{\not\equal{\csvline}{}}{%
+\refstepcounter{csvrownumber}%
+#3}{}%
+}%
+\egroup
+}
+%    \end{macrocode}
+%\end{macro}
+% Unstarred version (field labels will need to be set (using 
+% \cmdname{setcsvfieldlabel}) before using this macro.)
+%\begin{macro}{\@sortapplyCSVdata}
+%    \begin{macrocode}
+\newcommand{\@sortapplyCSVdata}[3][\relax]{%
+\bgroup
+\if\relax#1\relax\else\setkeys{csvsort.sty}{sort=#1}\fi
+\csv@insertionsort{#2}%
+\c@csvrownumber=0\relax
+\@for\@csv@element:=#2\do{%
+\expandafter\@csv@extractdata\@csv@element\csvline
+\expandafter\toks@\expandafter{\csvline}%
+\edef\@csvlin@{\@csvseparator\the\toks@\@csvseparator}%
+\long\edef\@csvlin@{\@csvseparator\csvline\@csvseparator}%
+\c@field=0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+\expandafter\toks@\expandafter{\param}%
+\advance\c@field by 1\relax
+\expandafter\xdef\csname @field\romannumeral\c@field\endcsname{%
+\the\toks@}%
+\edef\@fieldlabel{%
+\csname @fieldlabel\romannumeral\c@field\endcsname}%
+\expandafter\xdef\csname insert\@fieldlabel\endcsname{\the\toks@}%
+}%
+\ifthenelse{\not\equal{\csvline}{}}{%
+\refstepcounter{csvrownumber}%
+#3}{}%
+}%
+\egroup
+}
+%    \end{macrocode}
+%\end{macro}
+% Define \cmdname{sortCSVtotabular}. This is akin to \stynamefmt{csvtools}'
+% \cmdname{CSVtotabular}, but sorts the data. Takes an optional
+% argument that is a key=value list which is that same as the
+% package options, but only applies to this instance of
+%\cmdname{sortCSVtotabular}. This command first loads all the data
+% into a list, sorts the list, and then puts it in a tabular 
+% environment. The total number of data rows is stored in 
+% \cmdname{maxlines}.
+%\begin{macro}{\sortCSVtotabular}
+%    \begin{macrocode}
+\newcommand{\sortCSVtotabular}[6][]{%
+\@sortCSVtotabular[#1]{#2}{#3}{#4}{#5}{#6}{tabular}}
+%    \end{macrocode}
+%\end{macro}
+% As above, but use longtable environment instead:
+%\begin{macro}{\sortCSVtolongtable}
+%    \begin{macrocode}
+\newcommand{\sortCSVtolongtable}[6][]{%
+\@sortCSVtotabular[#1]{#2}{#3}{#4}{#5}{#6}{longtable}}
+%    \end{macrocode}
+%\end{macro}
+% The final argument specifies which tabular-like environment
+% to use:
+%\begin{macro}{\@sortCSVtotabular}
+%    \begin{macrocode}
+\newcommand{\@sortCSVtotabular}[7][]{%
+\bgroup
+\setkeys{csvsort.sty}{#1}%
+%    \end{macrocode}
+% Read all data into \cmdname{@csv@list}:
+%    \begin{macrocode}
+\def\@csv@list{}%
+\@applyCSVfile[\c@firstdataline]{#2}{%
+\edef\csv@key{\csv@sortvariable}%
+\if\relax\@csv@list\relax
+\protected@xdef\@csv@list{{\csv@key}{\csvline}}%
+\else
+\protected@xdef\@csv@list{\@csv@list,{\csv@key}{\csvline}}%
+\fi
+}%
+%    \end{macrocode}
+% Sort data, and put in required tabular-like environment
+%    \begin{macrocode}
+\sortCSVdatatotabular{\c@csvrownumber}{\@csv@list}{#3}{#4}{#5}{#6}{#7}%
+\egroup
+}
+%    \end{macrocode}
+%\end{macro}
+% \cmdname{sortCSVdatatotabular}\marg{n}\marg{list}\marg{col-align}\marg{header-row}\marg{all but last rows}\marg{last row}\marg{env-name}\par
+% This command sorts the data specified by \meta{list} (which has
+% \meta{n} elements) and puts in a tabular-like environment called
+% \meta{env-name}. This command is mainly provided for the benefit
+% of \texttt{csvtools.pl}, which is why it is not documented in the
+% main part of the \stynamefmt{csvtools} manual. Field names must be
+% set prior to use (using \cmdname{setcsvfieldlabel}.)
+%\begin{macro}{\sortCSVdatatotabular}
+%    \begin{macrocode}
+\newcommand{\sortCSVdatatotabular}[7]{%
+%    \end{macrocode}
+% Set \cmdname{maxlines} (total number of data rows, not including
+% header row).
+%    \begin{macrocode}
+\maxlines=#1\relax
+%    \end{macrocode}
+% Sort the data:
+%    \begin{macrocode}
+\csv@insertionsort{#2}%
+%    \end{macrocode}
+% Set \cmdname{csvlastbutone} to \cmdname{maxlines}$-1$:
+%    \begin{macrocode}
+\csvlastbutone=\maxlines
+\advance\csvlastbutone by -1\relax
+%    \end{macrocode}
+% Reset \cmdname{c@csvrownumber}:
+%    \begin{macrocode}
+\c@csvrownumber=0\relax
+\c@csvlinenum=0\relax
+%    \end{macrocode}
+% Initialise first row, last row and middle rows (in case not enough
+% data)
+%    \begin{macrocode}
+\def\@r@wh{#4}\def\@r@w{}\def\@r@wl{}%
+%    \end{macrocode}
+% Iterate through each element of sorted list
+%    \begin{macrocode}
+\@for\@csv@element:=#2\do{%
+%    \end{macrocode}
+% Extract data from the current list element (ignoring sort key)
+% and store in \cmdname{csvline}:
+%    \begin{macrocode}
+\expandafter\@csv@extractdata\@csv@element\csvline
+%    \end{macrocode}
+% Extract each field of \cmdname{csvline}:
+%    \begin{macrocode}
+\expandafter\toks@\expandafter{\csvline}%
+\edef\@csvlin@{\@csvseparator\the\toks@\@csvseparator}%
+\long\edef\@csvlin@{\@csvseparator\csvline\@csvseparator}%
+\c@field=0\relax
+\whiledo{\not\equal{\@csvlin@}{\@csvseparator}}{%
+\extractentry{\@csvlin@}{\param}%
+%    \end{macrocode}
+% Store field in \cmdname{toks@}
+%    \begin{macrocode}
+\expandafter\toks@\expandafter{\param}%
+%    \end{macrocode}
+% Increment field counter
+%    \begin{macrocode}
+\advance\c@field by 1\relax
+%    \end{macrocode}
+% Define \cmdname{field}\meta{n} and associated 
+% \cmdname{insert}\meta{label}
+%    \begin{macrocode}
+\expandafter\xdef\csname @field\romannumeral\c@field\endcsname{%
+\the\toks@}%
+\edef\@fieldlabel{%
+\csname @fieldlabel\romannumeral\c@field\endcsname}%
+\expandafter\xdef\csname insert\@fieldlabel\endcsname{\the\toks@}%
+}%
+%    \end{macrocode}
+% Increment row counter.
+%    \begin{macrocode}
+\refstepcounter{csvrownumber}%
+\refstepcounter{csvlinenum}%
+%    \end{macrocode}
+% Check to see if this is the first row, last row, of somewhere in
+% between
+%    \begin{macrocode}
+\ifnum\c@csvrownumber=\maxlines
+  \protected@edef\@r@wl{#6}%
+\else
+  \expandafter\toks@\expandafter{\@r@w}
+  \protected@edef\@r@w{\the\toks@#5}%
+\fi
+}%
+%    \end{macrocode}
+% Now do tabular environment:
+%    \begin{macrocode}
+\begin{#7}{#3}%
+\@r@wh
+\@r@w
+\@r@wl
+\end{#7}%
+}
+%    \end{macrocode}
+%\end{macro}
+%\iffalse
+%    \begin{macrocode}
+%</csvsort.sty>
+%    \end{macrocode}
+%\fi
+%\Finale
+\endinput
