@@ -1,0 +1,65 @@
+%% Appendix-Notes.tex
+%% Mac Radigan
+
+\section{Appendix D: Notes}
+\label{sec:appendix_notes}
+\subsection{Y-Combiner}
+
+% \begin{displayquote}
+% Tiger got to hunt, bird got to fly;
+% \newline
+% Man got to sit and wonder 'why, why, why?'
+% \newline
+% Tiger got to sleep, bird got to land;
+% \newline
+% Man got to tell himself he understand.
+% \newline
+% -Kurt Vonnegut, Cat's Cradle
+% \end{displayquote}
+% 
+% \newline
+% \newline
+% 
+% \begin{displayquote}
+% Tiger got to hunt,
+% \newline
+% Bird got to fly;
+% \newline
+% Lisper got to sit and wonder, (Y (Y Y))?
+% \newline
+% \newline
+% Tiger got to sleep,
+% \newline
+% Bird got to land;
+% \newline
+% Lisper got to tell himself he understand.
+% \newline
+% - Kurt Vonnegut, modified by Darius Bacon
+% \end{displayquote}
+
+Curry's Y-Combiner \cite{WikiY} is defined as:
+
+\begin{equation}
+\mathbf{Y} = 
+\lambda f . 
+\left( \lambda x . f \left( x x \right) \right)
+\left( \lambda x . f \left( x x \right) \right)
+\label{eq:y_combiner}
+\end{equation}
+
+When applied to a function $g$, the expansion follows \cite{WikiY}
+
+\begin{equation}
+\begin{aligned}
+\mathbf{Y}g 
+& = \left( \lambda f .  \left( \lambda x . f \left( x x \right) \right) \left( \lambda x . f \left( x x \right) \right) \right) g \\
+& = \left( \lambda x . g \left( x x \right) \right) \left( \lambda x . g \left( x x \right) \\
+& = g \left( \left( \lambda x . g \left( x x \right) \right) \left( \lambda x . g \left( x x \right) \right) \\
+& = g \left( \mathbf{Y} g \right)
+\end{aligned}
+\label{eq:y_combiner}
+\end{equation}
+
+
+
+%% *EOF*

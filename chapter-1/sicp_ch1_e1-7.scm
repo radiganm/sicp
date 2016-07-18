@@ -30,7 +30,11 @@
     
      (define (average x y)
        (/ (+ x y) 2))
-   
+
+;; =======================================================
+;; DIRECT
+;; =======================================================
+
 ;;;  Many numerical methods exist for accurate square root computations 
 ;;;  with fast convergence.  Visit the literature for a complete survey. 
 ;;;  Here we are employing Newton's method for root finding, with having
@@ -76,41 +80,71 @@
 ;;;      {
 ;;;        // x[n+1] = x[n] - f(x)/f'(x) = x[n] - (1/2) * (x[n] - s/x[n])
 ;;;        c = c - 0.5*(c-x/c);    // update prediction
-;;;        r = c*c - x;            // find root
+;;;        r = c*c - x;            // find residual
 ;;;      }
 ;;;      return c;
 
-  (define tol 0.0001)
-
-  (define (my-sqrt-iter x guess root)
+  (define (my-sqrt-iter x guess residual)
     ;; x[n+1] = x[n] - f(x)/f'(x) = x[n] - (1/2) * (x[n] - s/x[n])
-    (if (< root tol)
+    (if (< residual tol)
       guess ; return
       (let (
           (c (- guess (* 0.5 (- guess (/ x guess))))) ;; c = c - 0.5*(c-x/c);    // update prediction
-          (r (- (* guess guess) x))                   ;; r = c*c - x;            // find root
+          (r (- (* guess guess) x))                   ;; r = c*c - x;            // find residual
         ) ; bind
         (my-sqrt-iter x c r) ; recursion
       ) ; let
     ) ; if
   ) ; my-sqrt-iter
 
-  (define (my-sqrt x)
+  (define (my-sqrt-2 x)
     (my-sqrt-iter x x x)
   ) ; my-sqrt
 
+;; =======================================================
+;; NESTED FUNCTION
+;; =======================================================
+
+  (define (my-sqrt x)
+    ;; x[n+1] = x[n] - f(x)/f'(x) = x[n] - (1/2) * (x[n] - s/x[n])
+    (define (f x guess residual)
+      (if (< residual tol)
+        guess ; return
+        (let (
+            (c (- guess (* 0.5 (- guess (/ x guess))))) ;; c = c - 0.5*(c-x/c);    // update prediction
+            (r (- (* guess guess) x))                   ;; r = c*c - x;            // find residual
+          ) ; bind
+          (my-sqrt-iter x c r) ; recursion
+        ) ; let
+      ) ; if
+    ) ; iteration
+    (f x x x)
+  ) ; my-sqrt-iter
+
+;; =======================================================
+;; TESTS
+;; =======================================================
+
+  (define tol 0.0001)
+
   (bar)
   (prn "intrinsic:")
-  (prn (sqrt 9)                              ) ; 3.00009155413138
-  (prn (sqrt (+ 100 37))                     ) ; 11.704699917758145
-  (prn (sqrt (+ (sqrt 2) (sqrt 3)))          ) ; 1.7739279023207892
-  (prn (square (sqrt 1000))                  ) ; 1000.000369924366
+  (prn (sqrt 9)                                          ) ; 3.00009155413138
+  (prn (sqrt (+ 100 37))                                 ) ; 11.704699917758145
+  (prn (sqrt (+ (sqrt 2) (sqrt 3)))                      ) ; 1.7739279023207892
+  (prn (square (sqrt 1000))                              ) ; 1000.000369924366
   (hr)
-  (fmt "example 1-7: tolerance ~a~%" tol     ) ; tolerance 0.0001
-  (prn (my-sqrt 9)                           ) ; 3.0
-  (prn (my-sqrt (+ 100 37))                  ) ; 11.7046999107196
-  (prn (my-sqrt (+ (my-sqrt 2) (my-sqrt 3))) ) ; 1.77377122818687
-  (prn (square (my-sqrt 1000))               ) ; 1000.0
+  (fmt "example 1-7 (base/iter): tolerance ~a~%" tol     ) ; tolerance 0.0001
+  (prn (my-sqrt-2 9)                                     ) ; 3.0
+  (prn (my-sqrt-2 (+ 100 37))                            ) ; 11.7046999107196
+  (prn (my-sqrt-2 (+ (my-sqrt-2 2) (my-sqrt-2 3)))       ) ; 1.77377122818687
+  (prn (square (my-sqrt-2 1000))                         ) ; 1000.0
+  (hr)
+  (fmt "example 1-7 (nested): tolerance ~a~%" tol        ) ; tolerance 0.0001
+  (prn (my-sqrt 9)                                       ) ; 3.0
+  (prn (my-sqrt (+ 100 37))                              ) ; 11.7046999107196
+  (prn (my-sqrt (+ (my-sqrt 2) (my-sqrt 3)))             ) ; 1.77377122818687
+  (prn (square (my-sqrt 1000))                           ) ; 1000.0
   (bar)
 
 ;; *EOF*

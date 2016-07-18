@@ -6,22 +6,178 @@
     \section{Building Abstractions with Data}
         \subsection{Introduction to Data Abstraction}
             \subsubsection{Example: Arithmetic Operations for Rational Numbers}
-              \schemelist{../chapter-2/sicp_ch2_e1-1.scm}
-              \outlist{../output/sicp_ch2_e1-1.out}
+Exercise 2.1. Define a better version of make-rat that handles both positive and negative arguments. Make-rat should normalize the sign so that if the rational number is positive, both the numerator and denominator are positive, and if the rational number is negative, only the numerator is negative.
+              \schemelist{../chapter-2/sicp_ch2_e2-1.scm}
+              \outlist{../output/sicp_ch2_e2-1.out}
             \subsubsection{Abstraction Barriers}
-              \schemelist{../chapter-2/sicp_ch2_e1-2.scm}
-              \outlist{../output/sicp_ch2_e1-2.out}
-              \schemelist{../chapter-2/sicp_ch2_e1-3.scm}
-              \outlist{../output/sicp_ch2_e1-3.out}
+
+Exercise 2.2. Consider the problem of representing line segments in a plane. Each segment is represented as a pair of points: a starting point and an ending point. Define a constructor make-segment and selectors start-segment and end-segment that define the representation of segments in terms of points. Furthermore, a point can be represented as a pair of numbers: the x coordinate and the y coordinate. Accordingly, specify a constructor make-point and selectors x-point and y-point that define this representation. Finally, using your selectors and constructors, define a procedure midpoint-segment that takes a line segment as argument and returns its midpoint (the point whose coordinates are the average of the coordinates of the endpoints).  To try your procedures, you'll need a way to print points:
+
+              \schemelist{../chapter-2/sicp_ch2_e2-2.scm}
+              \outlist{../output/sicp_ch2_e2-2.out}
+
+Exercise 2.3. Implement a representation for rectangles in a plane. (Hint: You may want to make use of exercise 2.2.) In terms of your constructors and selectors, create procedures that compute the perimeter and the area of a given rectangle. Now implement a different representation for rectangles.  Can you design your system with suitable abstraction barriers, so that the same perimeter and area procedures will work using either representation?
+
+              \schemelist{../chapter-2/sicp_ch2_e2-3.scm}
+              \outlist{../output/sicp_ch2_e2-3.out}
             \subsubsection{What Is Meant by Data?}
             \subsubsection{Extended Exercise: Interval Arithmetic}
         \subsection{Hierarchical Data and the Closure Property}
+Exercise 2.17.  Define a procedure last-pair that returns the list that contains only the last element of a given (nonempty) list:
+              \schemelist{../chapter-2/sicp_ch2_e2-17.scm}
+              \outlist{../output/sicp_ch2_e2-17.out}
+Exercise 2.18.  Define a procedure reverse that takes a list as argument and returns a list of the same elements in reverse order:
+              \schemelist{../chapter-2/sicp_ch2_e2-18.scm}
+              \outlist{../output/sicp_ch2_e2-18.out}
             \subsubsection{Representing Sequences}
             \subsubsection{Hierarchical Structures}
             \subsubsection{Sequences as Conventional Interfaces}
             \subsubsection{Example: A Picture Language}
+Exercise 2.44.  Define the procedure up-split used by corner-split.  It is similar to right-split, except that it switches the roles of below and beside.
+              \schemelist{../chapter-2/sicp_ch2_e2-44.scm}
+              \outlist{../output/sicp_ch2_e2-44.out}
+
+\begin{figure}[H]
+\begin{center}
+%\resizebox{7in}{!}{\includegraphics{../figures/sicp_ch2_e2-44.png}}
+\includegraphics{../figures/sicp_ch2_e2-44.png}
+\end{center}
+\caption{Up Split 2}
+\label{fig:up_split_2}
+\end{figure}
+
+Exercise 2.45.  Right-split and up-split can be expressed as instances of a general splitting operation. Define a procedure split with the property that evaluating
+\begin{verbatim}
+  (define right-split (split beside below))
+  (define up-split (split below beside))
+\end{verbatim}
+produces procedures right-split and up-split with the same behaviors as the ones already defined.
+              \schemelist{../chapter-2/sicp_ch2_e2-45.scm}
+              \outlist{../output/sicp_ch2_e2-45.out}
+
+\begin{figure}[H]
+\begin{center}
+%\resizebox{7in}{!}{\includegraphics{../figures/sicp_ch2_e2-45_right.png}}
+\includegraphics{../figures/sicp_ch2_e2-45_right.png}
+\end{center}
+\caption{Right Split 2}
+\label{fig:right_split_2}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+%\resizebox{7in}{!}{\includegraphics{../figures/sicp_ch2_e2-45_up.png}}
+\includegraphics{../figures/sicp_ch2_e2-45_up.png}
+\end{center}
+\caption{Up Split 2}
+\label{fig:up_split_2}
+\end{figure}
+
+Exercise 2.46.  A two-dimensional vector v running from the origin to a point can be represented as a pair consisting of an x-coordinate and a y-coordinate. Implement a data abstraction for vectors by giving a constructor make-vect and corresponding selectors xcor-vect and ycor-vect. In terms of your selectors and constructor, implement procedures add-vect, sub-vect, and scale-vect that perform the operations vector addition, vector subtraction, and multiplying a vector by a scalar:
+              \schemelist{../chapter-2/sicp_ch2_e2-46.scm}
+              \outlist{../output/sicp_ch2_e2-46.out}
+
         \subsection{Symbolic Data}
             \subsubsection{Quotation}
+
+Exercise 2.54. Two lists are said to be equal? if they contain equal 
+elements arranged in the same order. For example,
+\newline
+
+(equal? '(this is a list) '(this is a list))
+\newline
+
+is true, but
+\newline
+
+(equal? '(this is a list) '(this (is a) list))
+\newline
+
+is false. To be more precise, we can define equal? recursively in terms of 
+\newline
+
+the basic eq? equality of symbols by saying that a and b are equal? if 
+they are both symbols and the symbols are eq?, or if they are both lists 
+such that (car a) is equal? to (car b) and (cdr a) is equal? to (cdr b). 
+Using this idea, implement equal? as a procedure. 
+\newline
+
+Comparing to structures using $equals?$:
+\newline
+
+\begin{equation}
+\left(equals?\mbox{ a b}\right) = 
+f\left(a,b\right) = 
+\begin{cases}
+\bot                                                  & \mbox{if } S\left(a\right) \oplus S\left(b\right) \\
+a \stackrel{?}{=} b                                   & \mbox{if } S\left(a\right) \wedge S\left(b\right) \\
+f\left(a_A,b_A\right) \lwedge f\left(a_D,b_D\right)   & \mbox{if } L\left(a\right) \wedge L\left(b\right)
+\end{cases}
+\label{eq:def_equals}
+\end{equation}
+\newline
+
+\text{where}
+\newline
+
+\begin{equation}
+L\left(a\right) \wedge L\left(b\right)
+\Longrightarrow
+\lnot \left( S\left(a\right) \wedge S\left(b\right) \right)
+\end{cases}
+\label{eq:def_equals_membership}
+\end{equation}
+
+
+To show that all cases have been exhausted (\ref{eq:def_equals_table}):
+\newline
+
+\begin{equation}
+\begin{array}{cc|ccc}
+S\left(a\right) & 
+S\left(b\right) & 
+S\left(a\right) \wedge S\left(b\right) & 
+S\left(a\right) \oplus S\left(b\right) & 
+\lnot \left( S\left(a\right) \wedge S\left(b\right) \right)
+\\
+\hline
+F & F & F                   & F                       & \textcolor{blue}{T} \\
+F & T & F                   &     \textcolor{blue}{T} & F                   \\
+T & F & F                   &     \textcolor{blue}{T} & F                   \\
+T & T & \textcolor{blue}{T} & F                       & F                   \\
+\end{array}
+\label{eq:def_equals_table}
+\end{equation}
+
+At this point, the recursive form is functional, but it is not expressed in tail-recursive form, and as such is not subject to tail-call optimization.  The following is a conversion to tail-recursive form:
+\newline
+\begin{equation}
+
+\begin{equation}
+\left(equals?\mbox{ a b}\right) = 
+f\left(a,b\right) = f_k\left(a,b,\top\right)
+\label{eq:def_equals_tco}
+\end{equation}
+\newline
+
+\begin{equation}
+f_k\left(a,b,p\right) = 
+\begin{cases}
+\bot                                                & \mbox{if } S\left(a\right) \oplus S\left(b\right) \\
+p \wedge \left( a \stackrel{?}{=} b \right)         & \mbox{if } S\left(a\right) \wedge S\left(b\right) \\
+f_k\left(a_D,b_D, f_k\left(a_A,b_A,p\right)\right)  & \mbox{otherwise}
+\end{cases}
+\label{eq:def_equals_tco_iter}
+\end{equation}
+\newline
+
+              \schemelist{../chapter-2/sicp_ch2_e2-54.scm}
+              \outlist{../output/sicp_ch2_e2-54.out}
+Exercise 2.55. Eva Lu Ator types to the interpreter the expression (car 'abracadabra)
+\newline
+To her surprise, the interpreter prints back quote. Explain.
+              \schemelist{../chapter-2/sicp_ch2_e2-55.scm}
+              \outlist{../output/sicp_ch2_e2-55.out}
             \subsubsection{Example: Symbolic Differentiation}
             \subsubsection{Example: Representing Sets}
             \subsubsection{Example: Huffman Encoding Trees}

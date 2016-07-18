@@ -1,0 +1,86 @@
+%% Appendix-Notation.tex
+%% Mac Radigan
+
+\section{Appendix C: Notation}
+\label{sec:appendix_notation}
+
+\subsection{Membership}
+
+\begin{equation}
+S\left(x\right) \triangleq x \in \mbox{SYMBOL}
+\end{cases}
+\label{eq:def_equals_symbol}
+\end{equation}
+
+\begin{equation}
+L\left(x\right) \triangleq x \in \mbox{LIST}
+\end{cases}
+\label{eq:def_equals_list}
+\end{equation}
+
+\subsection{Symbols}
+
+\begin{equation}
+\top \triangleq \mbox{\#t}
+\end{cases}
+\label{eq:def_equals_true}
+\end{equation}
+
+\begin{equation}
+\bot \triangleq \mbox{\#f}
+\end{cases}
+\label{eq:def_equals_false}
+\end{equation}
+
+\subsection{Access}
+
+\begin{equation}
+x_A \triangleq \left(\mbox{car x}\right)
+\end{cases}
+\label{eq:def_equals_car}
+\end{equation}
+
+\begin{equation}
+x_D \triangleq \left(\mbox{cdr x}\right)
+\end{cases}
+\label{eq:def_equals_cdr}
+\end{equation}
+
+\subsection{Equality}
+
+\begin{equation}
+x \stackrel{?}{=} y \triangleq \left(\mbox{eq? x y}\right)
+\end{cases}
+\label{eq:def_equals_eq}
+\end{equation}
+
+\subsection{Logic}
+
+\begin{equation}
+\lnot x \triangleq \left(\mbox{not x}\right)
+\end{cases}
+\label{eq:def_equals_not}
+\end{equation}
+
+\begin{equation}
+x \wedge y \triangleq \left(\mbox{and x y}\right)
+\end{cases}
+\label{eq:def_equals_and}
+\end{equation}
+
+\begin{equation}
+x \lor y \triangleq \left(\mbox{or x y}\right)
+\end{cases}
+\label{eq:def_equals_or}
+\end{equation}
+
+\begin{equation}
+x \oplus y \triangleq 
+\left(\lnot x \lwedge y\right)
+\lor
+\left(x \lwedge \lnot y\right)
+\end{cases}
+\label{eq:def_equals_xor}
+\end{equation}
+
+%% *EOF*

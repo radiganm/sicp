@@ -2,28 +2,36 @@
 ## makefile
 ## Mac Radigan
 
+.PHONY: clean preview init all
+
 target=./sicp
+
+temp=.
 
 export TEXINPUTS=/usr/share/texlive/texmf-dist/tex//
 #export BIBINPUTS=./bib
 
-all:
-	pdflatex --shell-escape --output-directory=. --file-line-error --interaction=nonstopmode $(target)
+all: init
+	pdflatex --shell-escape --output-directory=$(temp) --file-line-error --interaction=nonstopmode $(target)
 	bibtex $(target)
-	pdflatex --shell-escape --output-directory=. --file-line-error --interaction=nonstopmode $(target)
+	pdflatex --shell-escape --output-directory=$(temp) --file-line-error --interaction=nonstopmode $(target)
+	mv $(temp)/$(target).pdf .
+
+init:
+	-mkdir -p $(temp)
 
 preview: 
 	evince $(target).pdf
 
 clean:
-	\rm -f ./*.aux
-	\rm -f ./*.bbl
-	\rm -f ./*.blg
-	\rm -f ./*.dvi
-	\rm -f ./*.lof
-	\rm -f ./*.toc
-	\rm -f ./*.out
-	\rm -f ./*.log
-	\rm -f ./*.pdf
+	\rm -f $(temp)/*.aux
+	\rm -f $(temp)/*.bbl
+	\rm -f $(temp)/*.blg
+	\rm -f $(temp)/*.dvi
+	\rm -f $(temp)/*.lof
+	\rm -f $(temp)/*.toc
+	\rm -f $(temp)/*.out
+	\rm -f $(temp)/*.log
+	\rm -f $(temp)/*.pdf
 
 ## *EOF*

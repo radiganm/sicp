@@ -1,5 +1,5 @@
 #!/usr/bin/csi -s
-;; sicp_ch2_e1-1.scm
+;; sicp_ch2_e2-1.scm
 ;; Mac Radigan
 
   (load "../library/util.scm")

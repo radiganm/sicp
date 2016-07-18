@@ -39,6 +39,9 @@
       rotate
       square
       sum
+      xor
+      Y
+      Y2
       yeild
     )
     (import scheme chicken)
@@ -158,7 +161,7 @@
     (define (my-reverse x)
       (if (null? x)
         (list)
-        (append (reverse (cdr x)) (list (car x)))
+        (append (my-reverse (cdr x)) (list (car x)))
       )
     )
 
@@ -243,6 +246,11 @@
       )
     )
 
+    ;; exclusive or
+    (define (xor a b)
+      (or (and (not a) b) (and a (not b)))
+    )
+
     ;; square, sum, inc, and dec
     (define (square x) (* x x))
     (define (sum x) (apply + x) )
@@ -253,6 +261,16 @@
     (define (bind f x) (join (map f x)))
     (define (join x) (apply append '() x))
     (define yeild list)
+
+    ;; Y combiner
+    (define Y
+      (lambda (h)
+        (lambda args (apply (h (Y h)) args))))
+
+    (define (Y2 f)
+       ((lambda (x) (x x))
+         (lambda (x) (f (x x)))))
+
 
   ) ; module util
 

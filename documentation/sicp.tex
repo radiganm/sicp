@@ -23,6 +23,8 @@
 \usepackage{float}
 \usepackage{csquotes}
 \usepackage[skins,minted]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{enumerate}
 %\titleformat{\section}[block]{\Large\bfseries\filcenter}{}{}{}
 %\newcommand\Quote[1]{\lq\textsl{#1}\rq}
 %\newcommand\fr[2]{{\textstyle\frac{#1}{#2}}}
@@ -39,6 +41,10 @@
   linkcolor=black,
   urlcolor=black
 }
+
+\newcommand{\text}[1]{\\\indent\indent\indent\texttt{\footnotesize #1}\\}
+
+\newcommand{\shellcmd}[1]{\\\indent\indent\indent\texttt{\footnotesize\# #1}\\}
 
 \definecolor{bashbg}{rgb}{0.95,0.95,0.95}
 \definecolor{schemebg}{rgb}{0.95,0.95,0.95}
@@ -128,6 +134,7 @@
 \title{Structure and Interpretation of Computer Programs (SICP) \\ worked examples}
 \author{Mac Radigan}
 \date{} % comment this out if you would like to include the date
+%\nocite{WikiY}
 \doublespacing
 
 \maketitle
@@ -147,7 +154,10 @@ A collection of worked examples from Gerald Sussman's book Structure and Interpr
 
 \include{Appendix-Modules}
 \include{Appendix-Installation}
+\include{Appendix-Notation}
+\include{Appendix-Notes}
 
+\nocite{*}
 \bibliography{IEEEabrv,bibliography}
 
 \end{document}
