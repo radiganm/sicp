@@ -24,6 +24,16 @@
             \subsubsection{Mechanisms for Controlling Concurrency}
         \subsection{Streams}
             \subsubsection{Streams Are Delayed Lists}
+Exercise 3.50.  Complete the following definition, which generalizes stream-map to allow procedures that take multiple arguments, analogous to map in section 2.2.3, footnote 12.
+\begin{verbatim}
+  (define (stream-map proc . argstreams)
+    (if (<??> (car argstreams))
+        the-empty-stream
+        (<??>
+         (apply proc (map <??> argstreams))
+         (apply stream-map
+                (cons proc (map <??> argstreams))))))
+\end{verbatim}
               \schemelist{../chapter-3/sicp_ch3_e3-50.scm}
             \subsubsection{Infinite Streams}
             \subsubsection{Exploiting the Stream Paradigm}
