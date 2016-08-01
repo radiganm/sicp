@@ -2,7 +2,7 @@
 ## makefile
 ## Mac Radigan
 
-SHELL := /bin/zsh
+SHELL := /bin/bash
 
 all: run doc
 
@@ -11,7 +11,7 @@ run:
 
 prerequisites:
 	-mkdir -p ./figures
-	(cd ./figures; wget http://www.ee.cityu.edu.hk/~lmpo/lenna/len_std.jpg -o lena.jpg)
+	(cd ./figures; wget -o lena.jpg http://www.ee.cityu.edu.hk/~lmpo/lenna/len_std.jpg)
 
 doc: 
 	$(MAKE) -C ./documentation

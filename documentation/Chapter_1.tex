@@ -56,6 +56,78 @@ What behavior will Ben observe with an interpreter that uses applicative-order e
               % infinite loop (do not include output listing)
               \schemelist{../chapter-1/sicp_ch1_e1-5.scm}
               \outlist{../output/sicp_ch1_e1-5.out}
+Exercise 1.6.  Alyssa P. Hacker doesn't see why if needs to be provided as a special form. `Why can't I just define it as an ordinary procedure in terms of cond?'' she asks. Alyssa's friend Eva Lu Ator claims this can indeed be done, and she defines a new version of if:
+\newline
+
+\begin{verbatim}
+  (define (new-if predicate then-clause else-clause)
+    (cond (predicate then-clause)
+      (else else-clause)))
+\end{verbatim}
+\newline
+
+Eva demonstrates the program for Alyssa:
+\newline
+
+\begin{verbatim}
+  (new-if (= 2 3) 0 5)
+    5
+\end{verbatim}
+\newline
+
+\begin{verbatim}
+  (new-if (= 1 1) 0 5)
+    0
+\end{verbatim}
+\newline
+
+Delighted, Alyssa uses new-if to rewrite the square-root program:
+\newline
+
+\begin{verbatim}
+  (new-if (= 1 1) 0 5)
+    (define (sqrt-iter guess x)
+      (new-if (good-enough? guess x)
+        guess
+        (sqrt-iter (improve guess x) x)))
+\end{verbatim}
+\newline
+
+What happens when Alyssa attempts to use this to compute square roots? Explain.
+\newline
+
+Calls to the compound procedure new-if are applicatively evaluated, that is evaluated first and then passed as arguments to the procedure.  The predicates and clauses to cond, and thus results in infinite recursion of unintended clause.
+\newline
+
+This is not the case with the intrinsic if procedure, which performs normal evaluation of the expression.
+\newline
+
+\begin{equation}
+\mbox{new-if}\left(\mbox{predicate},\mbox{if-clause},\mbox{else-clause}\right) = 
+\begin{cases}
+\mbox{if-clause} & \mbox{if predicate} \\
+\mbox{then-clause} & \mbox{otherwise}
+\end{cases}
+\label{eq:newif}
+\end{equation}
+
+One possible correction for new-if, here, new-if-im, is to accept quasi-quoted arguments, and then eval them.
+\newline
+
+\begin{equation}
+\mbox{new-if}_{\mbox{im}}\left(\overline{\mbox{predicate}},\overline{\mbox{if-clause}},\overline{\mbox{else-clause}}\right) = 
+\begin{cases}
+eval\left(\mbox{if-clause}\right) & \mbox{if } eval\left(\mbox{predicate}\right) \\
+eval\left(\mbox{then-clause}\right) & \mbox{otherwise}
+\end{cases}
+\label{eq:newif_improved}
+\end{equation}
+
+where $\overline{\mbox{predicate}}$, $\overline{\mbox{if-clause}}$, and $\overline{\mbox{else-clause}}$ are quasi-quoted expressions.
+\newline
+
+              \schemelist{../chapter-1/sicp_ch1_e1-6.scm}
+              \outlist{../output/sicp_ch1_e1-6.out}
             \subsubsection{Conditional Expressions and Predicates}
             \subsubsection{Example: Square Roots by Newton's Method}
 Exercise 1.7. The good-enough? test used in computing square roots will not be very effective for finding the square roots of very small numbers. Also, in real computers, arithmetic operations are almost always performed with limited precision. This makes our test inadequate for very large numbers. Explain these statements, with examples showing how the test fails for small and large numbers. An alternative strategy for implementing good-enough? is to watch how guess changes from one iteration to the next and to stop when the change is a very small fraction of the guess. Design a square-root procedure that uses this kind of end test. Does this work better for small and large numbers?

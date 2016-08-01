@@ -76,9 +76,20 @@ x \lor y \triangleq \left(\mbox{or x y}\right)
 
 \begin{equation}
 x \oplus y \triangleq 
-\left(\lnot x \lwedge y\right)
+\left(\lnot x \wedge y\right)
 \lor
-\left(x \lwedge \lnot y\right)
+\left(x \wedge \lnot y\right)
+=
+\left(\mbox{or}
+  \left(\mbox{and}
+    \left(\mbox{not x}\right)
+    \left(\mbox{y}\right)
+  \right)
+  \left(\mbox{and}
+    \left(\mbox{x}\right)
+    \left(\mbox{not y}\right)
+  \right)
+\right)
 \end{cases}
 \label{eq:def_equals_xor}
 \end{equation}
