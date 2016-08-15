@@ -30,6 +30,7 @@
   ;;          { f(car(a),car(b)) ^ f(cdr(a),cdr(b))   if !( s(a) and s(b) )
   ;;
   (define (my-equal-subopt? a b)
+    (define (notlist? x) (not (list? x)))
     (cond 
       ;;
       ;; case: null(a) ^ null(b) ->  #t  (null check)
@@ -37,19 +38,19 @@
       ( (and (null? a) (null? b)) 
         #t )
       ;;
-      ;; case: s(a) ^ s(b)       ->  #t
+      ;; case: s(a) ^ s(b)       ->  a =?= b
       ;;
-      ( (and (symbol?   a) (symbol?   b)) 
-        #t )
-      ;;
-      ;; case: s(a) xor s(b)     ->  a =?= b
-      ;;
-      (      (xor (symbol? a) (symbol? b)) 
+      ( (and (notlist?   a) (notlist?   b)) 
         (eq? a b) )
+      ;;
+      ;; case: s(a) xor s(b)     ->  #f
+      ;;
+      (      (xor (notlist? a) (notlist? b)) 
+        #f )
       ;;
       ;; case: !( s(a)^s(b) )    ->  f( cdr(a), cdr(b) ) 
       ;;
-      ;;       i.e. (not (and (symbol? a) (symbol? b))) 
+      ;;       i.e. (not (and (notlist? a) (notlist? b))) 
       ;;
       ( else
         (and (eq? (car a) (car b)) (my-equal-subopt? (cdr a) (cdr b))) )
@@ -66,6 +67,7 @@
   ;;               { f(cdr(a), cdr(b), f(car(a),car(a),p))   if !( s(a) and s(b) )
   ;;
   (define (my-equal? a b)
+    (define (notlist? x) (not (list? x)))
     (define (f a b p)
       (cond 
         ;;
@@ -74,15 +76,15 @@
         (      (and (null? a) (null? b) )
           #t )
         ;;
-        ;; case: s(a) ^ s(b)        ->  #t
+        ;; case: s(a) ^ s(b)        ->  a =?= b
         ;;
-        (      (and (symbol? a) (symbol? b)) 
-          #t )
-        ;;
-        ;; case: s(a) xor s(b)      ->  a =?= b
-        ;;
-        (      (xor (symbol? a) (symbol? b)) 
+        (      (and (notlist? a) (notlist? b)) 
           (eq? a b) )
+        ;;
+        ;; case: s(a) xor s(b)      ->  #f
+        ;;
+        (      (xor (notlist? a) (notlist? b)) 
+          #f )
         ;;
         ;; case: !( s(a)^s(b) )     ->  f( cdr(a), cdr(b) )
         ;;

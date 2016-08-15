@@ -1,0 +1,101 @@
+%% Appendix-Notes.tex
+%% Mac Radigan
+
+\section{Appendix D: Y-Combinator}
+\label{sec:appendix_ycombinator}
+\subsection{Introduction}
+     Description of the Y Combinator based on Mike Mvanier's blog post \cite{Mvanier}.
+     see http://mvanier.livejournal.com/2897.html
+
+% \begin{displayquote}
+% Tiger got to hunt, bird got to fly;
+% \newline
+% Man got to sit and wonder 'why, why, why?'
+% \newline
+% Tiger got to sleep, bird got to land;
+% \newline
+% Man got to tell himself he understand.
+% \newline
+% -Kurt Vonnegut, Cat's Cradle
+% \end{displayquote}
+% 
+% \newline
+% \newline
+% 
+% \begin{displayquote}
+% Tiger got to hunt,
+% \newline
+% Bird got to fly;
+% \newline
+% Lisper got to sit and wonder, (Y (Y Y))?
+% \newline
+% \newline
+% Tiger got to sleep,
+% \newline
+% Bird got to land;
+% \newline
+% Lisper got to tell himself he understand.
+% \newline
+% - Kurt Vonnegut, modified by Darius Bacon
+% \end{displayquote}
+
+      \subsection{Cannonical Expression}
+
+        Curry's Y Combinator \cite{WikiY} is defined as:
+
+        \begin{equation}
+        \mathbf{Y} = 
+        \lambda f . 
+        \left( \lambda x . f \left( x x \right) \right)
+        \left( \lambda x . f \left( x x \right) \right)
+        \label{eq:y_combinator}
+        \end{equation}
+
+        When applied to a function $g$, the expansion follows \cite{WikiY}
+
+        \begin{equation}
+        \begin{aligned}
+        \mathbf{Y}g 
+        & = \left( \lambda f .  \left( \lambda x . f \left( x x \right) \right) \left( \lambda x . f \left( x x \right) \right) \right) g \\
+        & = \left( \lambda x . g \left( x x \right) \right) \left( \lambda x . g \left( x x \right) \right) \\
+        & = g \left( \left( \lambda x . g \left( x x \right) \right) \left( \lambda x . g \left( x x \right) \right) \right) \\
+        & = g \left( \mathbf{Y} g \right)
+        \end{aligned}
+        \label{eq:y_combinator_expanded}
+        \end{equation}
+
+    \subsection{Connonical Form in Scheme}
+      Direct implementation of the above expression for the Y Combinator will not terminate during applicative order \cite{Mvanier}.
+      \subsubsection{Strict Scheme (Chicken)}
+        Chicken scheme is a strict scheme, and evaluates in applicative order.
+        \schemelist{../appendices-y/src-chicken/y-combinator.scm}
+      \subsubsection{Using Lazy Evaluation (Racket \#lang lazy)}
+        This will work in a lazy language, as shown using the lazy extension in Racket.
+        \schemelist{../appendices-y/src-racket/y-combinator.rkt-lazy}
+        \outlist{../output/y-combinator-rkt-lazy.out}
+
+
+  \subsection{Normal Order Y Combinator}
+    The Normal Order Y Combinator will not terminate during applicative order \cite{Mvanier}.
+    \subsubsection{Strict Scheme (Chicken)}
+      \schemelist{../appendices-y/src-chicken/y-combinator-normal.scm}
+    \subsubsection{Using Strict Evaluation (Racket)}
+      \schemelist{../appendices-y/src-racket/y-combinator-normal.rkt-lazy}
+    \subsubsection{Using Lazy Evaluation (Racket \#lang lazy)}
+      However, it will work under lazy evaluation.
+      \schemelist{../appendices-y/src-racket/y-combinator-normal.rkt-lazy}
+      \outlist{../output/y-combinator-normal-rkt-lazy.out}
+
+    \subsection{Strict (Applicative-Order) Y Combinator}
+      The Strict (Applicative-Order) Y Combinator can be used with both applicative order and lazy evaluation \cite{Mvanier}.
+      \subsubsection{Strict Scheme (Chicken)}
+        \schemelist{../appendices-y/src-chicken/y-combinator-strict.scm}
+        \outlist{../output/y-combinator-strict-scm.out}
+      \subsubsection{Using Strict Evaluation (Racket)}
+        \schemelist{../appendices-y/src-racket/y-combinator-strict.rkt}
+        \outlist{../output/y-combinator-strict-rkt.out}
+      \subsubsection{Using Lazy Evaluation (Racket \#lang lazy)}
+        \schemelist{../appendices-y/src-racket/y-combinator-strict.rkt-lazy}
+        \outlist{../output/y-combinator-strict-rkt-lazy.out}
+
+%% *EOF*

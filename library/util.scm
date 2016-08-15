@@ -41,6 +41,7 @@
       sum
       xor
       Y
+      Y-normal
       Y2
       yeild
     )
@@ -263,13 +264,18 @@
     (define yeild list)
 
     ;; Y combiner
-    (define Y
-      (lambda (h)
-        (lambda args (apply (h (Y h)) args))))
-
-    (define (Y2 f)
+    ;;   strict-order
+    (define Y 
+      (lambda (f)
+        ((lambda (x) (x x))
+         (lambda (x) (f (lambda (y) ((x x) y)))))))
+    ;;   normal-order
+    (define (Y-normal f)
        ((lambda (x) (x x))
          (lambda (x) (f (x x)))))
+    (define Y2
+      (lambda (h)
+        (lambda args (apply (h (Y h)) args))))
 
 
   ) ; module util
