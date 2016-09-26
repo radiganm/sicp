@@ -1,0 +1,21 @@
+## e-2-24-box-and-pointer.dot
+## Mac Radigan
+
+  digraph G { 
+
+    rankdir=LR;
+
+    node [shape=record] 
+    n1 [label="{ <car>1|<cdr> }"] 
+    n2 [label="{ <car>2|<cdr> }"] 
+    n3 [label="{ <car>3|<cdr> }"] 
+    n4 [label="{ <car>4|<cdr>/ }"] 
+
+    edge [tailclip=false dir=both arrowtail=dot] 
+    n1:cdr:c->n2:car [arrowhead=vee arrowtail=dot dir=both]
+    n2:cdr:c->n3:car [arrowhead=vee arrowtail=dot dir=both]
+    n3:cdr:c->n4:car [arrowhead=vee arrowtail=dot dir=both]
+
+  }
+
+## *EOF*

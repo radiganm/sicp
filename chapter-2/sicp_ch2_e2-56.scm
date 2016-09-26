@@ -8,9 +8,9 @@
 ;;; Exercise 2.56.  Show how to extend the basic differentiator to handle more 
 ;;; kinds of expressions. For instance, implement the differentiation rule
 ;;;
-;;;   d(u^n)           du
-;;;   ------  =  nu^-1 --
-;;;     dx             dx
+;;;   d(u^n)              du
+;;;   ------  =  nu^(n-1) --
+;;;     dx                dx
 ;;;
 
   (define (deriv exp var)
@@ -27,9 +27,9 @@
              (make-product (deriv (multiplier exp) var)
                            (multiplicand exp))))
           ;
-          ;   d(u^n)           du
-          ;   ------  =  nu^-1 --
-          ;     dx             dx
+          ;   d(u^n)              du
+          ;   ------  =  nu^(n-1) --
+          ;     dx                dx
           ;
           ((exponent? exp)
            (make-product 

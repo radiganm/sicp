@@ -21,6 +21,42 @@ Exercise 2.3. Implement a representation for rectangles in a plane. (Hint: You m
               \schemelist{../chapter-2/sicp_ch2_e2-3.scm}
               \outlist{../output/sicp_ch2_e2-3.out}
             \subsubsection{What Is Meant by Data?}
+
+Exercise 2.4. Here is an alternative procedural representation of pairs. For this representation, verify that (car (cons x y)) yields x for any objects x and y.  What is the corresponding definition of cdr? (Hint: To verify that this works, make use of the substitution model of section 1.1.5.) 
+
+\begin{equation}
+cons\left(x,y\right) \triangleq \lambda m . m x y
+\label{eq:church_pair}
+\end{equation}
+\newline
+
+\begin{equation}
+\begin{split}
+car\left(z\right) & \triangleq \lambda z . z \lambda p q . p \\
+& \to_\beta \lfloor{ ^{cons\left(x,y\right)} / _{z} \rfloor} car\left(z\right)  \\
+& = \left( \lambda m . m x y \right) \lambda p q . p \\
+& \to_\beta \left( \lambda p q . p \right) x y  \\
+& \to_\beta x
+\end{split}
+\label{eq:church_car}
+\end{equation}
+\newline
+
+\begin{equation}
+\begin{split}
+cdr\left(z\right) & \triangleq \lambda z . z \lambda p q . q \\
+& \to_\beta \lfloor{ ^{cons\left(x,y\right)} / _{z} \rfloor} cdr\left(z\right)  \\
+& = \left( \lambda m . m x y \right) \lambda p q . q \\
+& \to_\beta \left( \lambda p q . q \right) x y  \\
+& \to_\beta y
+\end{split}
+\label{eq:church_cdr}
+\end{equation}
+\newline
+% 
+              \schemelist{../chapter-2/sicp_ch2_e2-4.scm}
+              \outlist{../output/sicp_ch2_e2-4.out}
+
             \subsubsection{Extended Exercise: Interval Arithmetic}
         \subsection{Hierarchical Data and the Closure Property}
 Exercise 2.17.  Define a procedure last-pair that returns the list that contains only the last element of a given (nonempty) list:
@@ -31,6 +67,112 @@ Exercise 2.18.  Define a procedure reverse that takes a list as argument and ret
               \outlist{../output/sicp_ch2_e2-18.out}
             \subsubsection{Representing Sequences}
             \subsubsection{Hierarchical Structures}
+
+Exercise 2.21. The procedure square-list takes a list of numbers as argument and returns a list of the squares of those numbers.
+
+\begin{verbatim}
+  (square-list (list 1 2 3 4))
+    (1 4 9 16)
+\end{verbatim}
+
+Here are two different definitions of square-list. Complete both of them by filling in the missing expressions:
+
+\begin{verbatim}
+  (define (square-list items)
+    (if (null? items)
+      nil
+    (cons <??> <??>)))
+
+  (define (square-list items)
+    (map <??> <??>))
+\end{verbatim}
+
+\begin{equation}
+{\ell}^2\left(\mbox{items}\right) \triangleq
+\begin{cases}
+\mbox{nil} & \mbox{, null? items} \\
+\mbox{items}_A^2 \mbox{ :: } {\ell}^2\left( \mbox{items}_D \right) & \mbox{ o.w.}
+\end{cases}
+\caption{{\ell}^2 using recursion}
+\label{eq:l2_map}
+\end{equation}
+\newline
+
+\begin{equation}
+{\ell}^2\left(\mbox{items}\right) \triangleq
+\mbox{map } \left( \lambda x . x^2 \right) \mbox{ items}
+\caption{{\ell}^2 using map}
+\label{eq:l2_map}
+\end{equation}
+\newline
+
+              \schemelist{../chapter-2/sicp_ch2_e2-21.scm}
+              \outlist{../output/sicp_ch2_e2-21.out}
+
+Exercise 2.23. The procedure for-each is similar to map. It takes as arguments a procedure and a list of elements. However, rather than forming a list of the results, for-each just applies the procedure to each of the elements in turn, from left to right. The values returned by applying the procedure to the elements are not used at all -- for-each is used with procedures that perform an action, such as printing. For example,
+\newline
+
+\begin{verbatim}
+  (for-each (lambda (x) (newline) (display x))
+    (list 57 321 88))
+
+  57
+  321
+  88
+\end{verbatim}
+\newline
+
+The value returned by the call to for-each (not illustra above) can be something arbitrary, such as true. Give an implementation of for-each. 
+\newline
+
+\begin{equation}
+\mbox{for-each}\left(f,x\right) \triangleq
+\begin{cases}
+\mobx{\#t} & \mobx{null?\ x} \\
+\mbox{progn: } f x_A \mbox{\ ;\ } \mbox{for-each}\left(f,x_D\right) & \mbox{o.w.} \\
+\end{cases}
+\label{eq:foreach}
+\end{equation}
+\newline
+
+              \schemelist{../chapter-2/sicp_ch2_e2-23.scm}
+              \outlist{../output/sicp_ch2_e2-23.out}
+
+Suppose we evaluate the expression (list 1 (list 2 (list 3 4))).  Give the result printed by the interpreter, the corresponding box-and-pointer structure, and the interpretation of this as a tree (as in figure 2.6). 
+
+\begin{figure}[H]
+\begin{center}
+%\resizebox{7in}{!}{\includegraphics{./graphviz/e-2-24-box-and-pointer.png}}
+\includegraphics{./graphviz/e-2-24-box-and-pointer.png}
+\end{center}
+\caption{box and pointer representation}
+\label{fig:box_and_pointer}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+%\resizebox{7in}{!}{\includegraphics{./graphviz/e-2-24-binary.png}}
+\includegraphics{./graphviz/e-2-24-binary.png}
+\end{center}
+\caption{tree representation}
+\label{fig:binary}
+\end{figure}
+
+              \schemelist{../chapter-2/sicp_ch2_e2-24.scm}
+              \outlist{../output/sicp_ch2_e2-24.out}
+
+Exercise 2.25. Give combinations of cars and cdrs that will pick 7 from each of the following lists:
+
+\begin{verbatim}
+  L1: (1 3 (5 7) 9)
+  L2: ((7))
+  L3: (1 (2 (3 (4 (5 (6 7))))))
+\end{verbatim}
+\newline
+
+              \schemelist{../chapter-2/sicp_ch2_e2-25.scm}
+              \outlist{../output/sicp_ch2_e2-25.out}
+
             \subsubsection{Sequences as Conventional Interfaces}
             \subsubsection{Example: A Picture Language}
 Exercise 2.44.  Define the procedure up-split used by corner-split.  It is similar to right-split, except that it switches the roles of below and beside.
@@ -188,6 +330,65 @@ Exercise 2.56.  Show how to extend the basic differentiator to handle more kinds
 \newline
               \schemelist{../chapter-2/sicp_ch2_e2-56.scm}
               \outlist{../output/sicp_ch2_e2-56.out}
+
+Exercise 2.73. Section 2.3.2 described a program that performs symbolic differentiation:
+\newline
+
+\begin{verbatim}
+ (define (deriv exp var)
+   (cond ((number? exp) 0)
+     ((variable? exp) (if (same-variable? exp var) 1 0))
+     ((sum? exp)
+       (make-sum (deriv (addend exp) var)
+                 (deriv (augend exp) var)))
+       ((product? exp)
+          (make-sum
+          (make-product (multiplier exp)
+                        (deriv (multiplicand exp) var))
+          (make-product (deriv (multiplier exp) var)
+                        (multiplicand exp))))
+ 
+  <more rules can be added here>
+ 
+       (else (error "unknown expression type -- DERIV" exp))))
+\end{verbatim}
+
+
+We can regard this program as performing a dispatch on the type of the expression to be differentiated.  In this situation the "type tag" of the datum is the algebraic operator symbol (such as +) and the operation being performed is deriv. We can transform this program into data-directed style by rewriting the basic derivative procedure as 
+\newline
+
+\begin{verbatim}
+  (define (deriv exp var)
+   (cond ((number? exp) 0)
+     ((variable? exp) (if (same-variable? exp var) 1 0))
+     (else ((get 'deriv (operator exp)) (operands exp)
+       var))))
+  (define (operator exp) (car exp))
+  (define (operands exp) (cdr exp))
+\end{verbatim}
+
+a. Explain what was done above. Why can't we assimilate the predicates number? and same-variable? into the data-directed dispatch?
+\newline
+
+b. Write the procedures for derivatives of sums and products, and the auxiliary code required to install them in the table used by the program above.
+\newline
+
+c. Choose any additional differentiation rule that you like, such as the one for exponents (exercise 2.56), and install it in this data-directed system.
+\newline
+
+d. In this simple algebraic manipulator the type of an expression is the algebraic operator that binds it together. Suppose, however, we indexed the procedures in the opposite way, so that the dispatch line in deriv looked like
+\newline
+
+\begin{verbatim}
+  ((get (operator exp) 'deriv) (operands exp) var)
+\end{verbatim}
+
+What corresponding changes to the derivative system are required? 
+\newline
+
+              \schemelist{../chapter-2/sicp_ch2_e2-73.scm}
+              \outlist{../output/sicp_ch2_e2-73.out}
+
             \subsubsection{Example: Representing Sets}
             \subsubsection{Example: Huffman Encoding Trees}
         \subsection{Multiple Representations for Abstract Data}

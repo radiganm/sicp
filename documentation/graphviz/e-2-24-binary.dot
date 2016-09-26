@@ -1,0 +1,20 @@
+## e-2-24-binary.dot
+## Mac Radigan
+
+   digraph G {
+
+     nodesep=0.4;
+     ranksep=0.5;
+
+     n1 [label=""  xlabel="(1 (2 (3 4)))"]
+     n2 [label=""  xlabel="(2 (3 4))"]
+     n3 [label="3" xlabel="3"]
+     n4 [label="4" xlabel="4"]
+
+     n1 -> n2
+     n2 -> n3
+     n2 -> n4
+
+  }
+
+## *EOF*
