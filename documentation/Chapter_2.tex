@@ -325,7 +325,7 @@ Exercise 2.56.  Show how to extend the basic differentiator to handle more kinds
 \begin{equation}
 \frac{\partial d \left( u^n \right)}{\partial u}
 = n u^{-1} \frac{\partial u}{\partial x}
-\label{eq:deriv_exp}
+\label{eq:deriv_exp_2}
 \end{equation}
 \newline
               \schemelist{../chapter-2/sicp_ch2_e2-56.scm}
@@ -366,6 +366,57 @@ We can regard this program as performing a dispatch on the type of the expressio
   (define (operator exp) (car exp))
   (define (operands exp) (cdr exp))
 \end{verbatim}
+
+Constant Rule
+\begin{equation}
+\frac{\partial c}{\partial x} = 0
+\label{eq:constant_rule}
+\end{equation}
+\newline
+
+Sum Rule
+\begin{equation}
+\frac{\partial}{\partial x} \left( u + v \right) = \frac{\partial u}{\partial x} + \frac{\partial v}{\partial x} 
+\label{eq:product_rule}
+\end{equation}
+\newline
+
+Product Rule
+\begin{equation}
+%\frac{d}{dx} \left( f \cdot g \right) = f \cdot g^{'} + f^{'} \cdot g = v \cdot \frac{du}{dx} + u \cdot \frac{dv}{dx} 
+\frac{\partial}{\partial x} \left( f \cdot g \right) = v \cdot \frac{\partial u}{\partial x} + u \cdot \frac{\partial v}{\partial x} 
+\label{eq:product_rule}
+\end{equation}
+\newline
+
+Exponent Rule
+\begin{equation}
+\frac{\partial d \left( u^n \right)}{\partial u} = n u^{-1} \frac{\partial u}{\partial x}
+\label{eq:deriv_exp}
+\end{equation}
+\newline
+
+% Quotient Rule
+% \begin{equation}
+% \frac{d}{dx} \frac{f}{g} = \frac{(f^{'} \cdot g - g^{'} \cdot f )}{g^2}
+% \label{eq:quotient_rule}
+% \end{equation}
+% \newline
+
+% Reciprocal Rule 
+% \begin{equation}
+% \frac{d}{dx} \frac{1}{f} = \frac{f^{'}}{f^2}
+% \label{eq:reciprocal_rule}
+% \end{equation}
+% \newline
+
+Chain Rule
+\begin{equation}
+%\frac{d}{dx} \left( f \circ g \right) = (f^{'} \circ g) \cdot g^{'}
+\frac{\partial}{\partial x} \left( f \circ g \right) = (\frac{\partial f}{\partial x} \circ g) \cdot \frac{\partial g}{\partial x}
+\label{eq:chain_rule}
+\end{equation}
+\newline
 
 a. Explain what was done above. Why can't we assimilate the predicates number? and same-variable? into the data-directed dispatch?
 \newline
