@@ -7,6 +7,7 @@ SHELL := /bin/bash
 all: run doc
 
 run:
+	-mkdir -p ./output
 	./run.sh
 
 prerequisites:
