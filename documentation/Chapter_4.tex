@@ -41,6 +41,85 @@ Exercise 4.56.  Formulate compound queries that retrieve the following informati
               \schemelist{../chapter-4/sicp_ch4_e4-56.scm}
               \outlist{../output/sicp_ch4_e4-56.out}
             \subsubsection{How the Query System Works}
+
+\begin{algorithm}
+\caption{Driver Loop}
+\label{alg:driver_loop}
+\Procedure{Driver}{}
+  \State \Comment{Main Query REPL}
+  \State $\mbox{let  } q \leftarrow \mathbf{READ}$
+  \If{ $\mbox{Assertion-To-Be-Added?  } q$ }
+    \State $\mbox{Add-Rule-Or-Assertion!  } \leftarrow q$
+  \Else
+    \State $\mbox{Display-Stream } \mbox{Stream-Map } \mbox{  } \texttt{\char`\\}$
+    \State $\lambda f . \mathbf{Instantiate}(q\mbox{,}f\mbox{,} \lambda v f . \mbox{ccm}(v)) \mbox{  } \texttt{\char`\\}$
+    \State $\mathbf{qeval}(q\mbox{,the-stream})$
+  \EndIf
+\EndProcedure
+\end{algorithm}
+\newline
+\schemelist{./ch4_driver.scm}
+\newline
+
+\begin{algorithm}
+\caption{Instantiate}
+\label{alg:connected}
+\Function{Instantiate}{\mathbb{e}:Expression, \mathbb{f}:Frame \mathbb{h}:Handler}
+  \State \Comment{Instantiate Binding Variables}
+  \Function{Copy}{\mathbb{e}:Expression}
+    \If{var? \mathbf{e}}
+      \State $\mbox{let } \mbox{b := f}\left[ e \right]$
+      \If{\mathbf{b}}
+        \State $Copy(b_D)$
+        \State \Comment{Contract Question Mark (ccm) with Handler h}
+        \State $ccm(e)$
+      \EndIf
+    \EndIf
+    \If{pair? \mathbf{e}}
+      \State $\left[ Copy(e_A) \mbox{ } Copy(e_D) \right]$
+    \EndIf
+    \If{Else:}
+      \State $Copy(e)$
+    \EndIf
+  \EndFunction
+  \State $Copy(e)$
+\EndFunction
+\end{algorithm}
+\newline
+\schemelist{./ch4_instantiate.scm}
+\newline
+
+\begin{algorithm}
+\caption{Qeval}
+\label{alg:qeval}
+\Function{Qeval}{\mathbb{q}:Query, \mathbb{s}:FrameStream}
+  \State \Comment{Evaluate Query}
+  \State $\mbox{let } \mbox{f := } \mathbf{getProc}(q)$
+  \If{f}
+    \State $\mathbf{f}(q_D,s)$
+  \Else
+    \State $\mathbf{SimpleQuery}(q_D,s)$
+  \EndIf
+\EndFunction
+\end{algorithm}
+\newline
+\schemelist{./ch4_qeval.scm}
+\newline
+
+\begin{algorithm}
+\caption{SimpleQuery}
+\label{alg:simplequery}
+\Function{SimpleQuery}{\mathbb{p}:QueryPattern, \mathbb{s}:FrameStream}
+  \State \Comment{Evaluate Simple Query}
+  \State $\mbox{stream-flatmap } \texttt{\char`\\}$
+  \State $\mbox{   } \lambda f . \mathbf{StreamAppendDelayed}( \mbox{ } \mathbf{FindAssertions}(p,f) \mbox{ , } \mathbf{Delay}(\mathbf{ApplyRules}(p,s)) \mbox{ } ) \mbox{ } \texttt{\char`\\}$
+  \State $\mbox{   } fs$
+\EndFunction
+\end{algorithm}
+\newline
+\schemelist{./ch4_simple_query.scm}
+\newline
+
             \subsubsection{Is Logic Programming Mathematical Logic?}
             \subsubsection{Implementing the Query System}
 
